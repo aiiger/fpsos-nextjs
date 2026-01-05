@@ -1,478 +1,446 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { staggerContainerVariants, staggerItemVariants } from '@/lib/animations'
+import { motion, useReducedMotion } from 'framer-motion'
+
+// Animation variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.12,
+      delayChildren: 0.2
+    }
+  }
+}
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 24 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: [0.22, 1, 0.36, 1] // Custom easing for smoothness
+    }
+  }
+}
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.7,
+      ease: [0.22, 1, 0.36, 1]
+    }
+  }
+}
 
 export default function PackagesPage() {
+  const shouldReduceMotion = useReducedMotion()
+
   return (
-    <>
-      <section className="section" style={{
-        paddingTop: 'calc(64px + var(--spacing-10))',
-        paddingBottom: 'var(--spacing-12)'
-      }}>
-        <div className="container">
-          {/* Header */}
-          <motion.div 
-            style={{
-              textAlign: 'center',
-              marginBottom: 'var(--spacing-10)',
-              maxWidth: '900px',
-              margin: '0 auto var(--spacing-10)'
-            }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <div style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              padding: 'var(--spacing-2) var(--spacing-4)',
-              background: 'rgba(232, 153, 0, 0.08)',
-              border: '1px solid rgba(232, 153, 0, 0.15)',
-              borderRadius: 'var(--radius-full)',
-              marginBottom: 'var(--spacing-4)',
-              fontSize: '0.8125rem',
-              fontWeight: 600,
-              color: 'var(--fpsos-orange)',
-              letterSpacing: '-0.008em'
-            }}>
-              Professional CS2 Optimization Services
-            </div>
-
-            <h1 style={{
-              marginBottom: 'var(--spacing-3)',
-              fontSize: 'clamp(2.25rem, 5vw, 3.5rem)',
-              fontWeight: 800,
-              letterSpacing: '-0.03em',
-              lineHeight: 1.1
-            }}>
-              Choose Your <span style={{
-                background: 'linear-gradient(135deg, var(--fpsos-orange) 0%, var(--fpsos-purple) 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text'
-              }}>Performance Plan</span>
-            </h1>
-            <p style={{
-              fontSize: '1.125rem',
-              color: 'var(--text-secondary)',
-              lineHeight: 1.5,
-              fontWeight: 400,
-              letterSpacing: '-0.011em'
-            }}>
-              Safe, tested optimizations with transparent pricing.
-              <br />
-              All packages include remote support and personalized configuration.
-              <br />
-              <span style={{ fontSize: '0.95rem', color: 'var(--text-tertiary)' }}>
-                💡 Support tickets are valid for 30 days from session completion
-              </span>
-            </p>
-          </motion.div>
-
-          {/* Service Packages Grid */}
-          <motion.div 
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
-              gap: 'var(--spacing-3)',
-              marginBottom: 'var(--spacing-10)'
-            }}
-            variants={staggerContainerVariants}
-            initial="initial"
-            animate="animate"
-          >
-            <ServicePackage
-              name="Quick Remote Fix"
-              price="199"
-              color="var(--quick-fix)"
-              glowClass="glow-quick"
-              features={[
-                'No Optimization, Just Solutions',
-                'Ideal if your PC is crashing, freezing or shutting down unexpectedly',
-                'Fast help, no fluff',
-                '1 Support Session (Valid 30 Days)',
-                'Diagnose common PC issues: crashes, shutdowns, freezes',
-                'Average Completion: ~1 Hour',
-                'Some issues may need follow-up sessions'
-              ]}
-              calendlyUrl="https://calendly.com/fpsoptimizationstation/quickremotefix"
-              description="Fix immediate problems fast"
-            />
-
-            <ServicePackage
-              name="Full System Tune-Up"
-              price="399"
-              color="var(--full-tune)"
-              glowClass="glow-tune"
-              featured
-              features={[
-                'For competitive gaming',
-                'Your all-in-one performance boost: faster FPS, lower latency, smoother gameplay',
-                'Full optimization: Windows, BIOS, GPU & network',
-                'Smart overclocking/undervolting (CPU/GPU/RAM)',
-                '4 Support Tickets (Valid 30 Days)',
-                'Stability & Stress Testing to guarantee results'
-              ]}
-              calendlyUrl="https://calendly.com/fpsoptimizationstation/fullsystemtuneup"
-              description="Most popular - complete competitive edge"
-            />
-
-            <ServicePackage
-              name="Extreme BIOSPRIME"
-              price="699"
-              color="var(--extreme)"
-              glowClass="glow-extreme"
-              features={[
-                'Extreme BIOS Tuning for Elite Performance',
-                'Targeted BIOS tuning for the lowest latency and best RAM timings possible',
-                'Perfect for competitive players & enthusiasts',
-                'BIOS-only performance tuning',
-                'Manual RAM timing optimization',
-                'Guided stress testing for each stage',
-                'Sessions split as needed to ensure stability'
-              ]}
-              calendlyUrl="https://calendly.com/fpsoptimizationstation/extremebiosprime"
-              description="Maximum performance for enthusiasts"
-            />
-          </motion.div>
-
-          {/* Trust Guarantees */}
-          <div style={{
-            marginBottom: 'var(--spacing-10)',
-            background: 'linear-gradient(135deg, rgba(232, 153, 0, 0.04), rgba(104, 0, 54, 0.04))',
-            border: '1px solid rgba(232, 153, 0, 0.12)',
-            borderRadius: 'var(--radius-lg)',
-            padding: 'var(--spacing-8) var(--spacing-6)',
-            maxWidth: '1000px',
-            margin: '0 auto var(--spacing-10)'
-          }}>
-            <h2 style={{
-              textAlign: 'center',
-              marginBottom: 'var(--spacing-6)',
-              fontSize: 'clamp(1.75rem, 3vw, 2.25rem)',
-              letterSpacing: '-0.025em'
-            }}>
-              Our <span style={{ color: 'var(--fpsos-orange)' }}>Commitment</span>
-            </h2>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-              gap: 'var(--spacing-5)'
-            }}>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '2rem', marginBottom: 'var(--spacing-2)' }}>✓</div>
-                <h4 style={{ marginBottom: 'var(--spacing-2)', fontSize: '1.125rem', fontWeight: 700 }}>
-                  100% Safe
-                </h4>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.9375rem' }}>
-                  Only tested, manufacturer-approved settings.
-                </p>
-              </div>
-
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '2rem', marginBottom: 'var(--spacing-2)' }}>📊</div>
-                <h4 style={{ marginBottom: 'var(--spacing-2)', fontSize: '1.125rem', fontWeight: 700 }}>
-                  Documented
-                </h4>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.9375rem' }}>
-                  Full before/after benchmarks with every session.
-                </p>
-              </div>
-
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '2rem', marginBottom: 'var(--spacing-2)' }}>💰</div>
-                <h4 style={{ marginBottom: 'var(--spacing-2)', fontSize: '1.125rem', fontWeight: 700 }}>
-                  Guaranteed
-                </h4>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.9375rem' }}>
-                  Full refund if we don't deliver measurable improvements.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Comparison Table */}
-          <motion.div 
-            className="glass-card"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            style={{
-              padding: 'var(--spacing-6)',
-              marginBottom: 'var(--spacing-8)'
-            }}
-          >
-            <h2 style={{
-              marginBottom: 'var(--spacing-5)',
-              textAlign: 'center',
-              letterSpacing: '-0.025em'
-            }}>
-              Package Comparison
-            </h2>
-            <ComparisonTable />
-          </motion.div>
-
-          {/* FAQ */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            style={{ maxWidth: '800px', margin: '0 auto' }}
-          >
-            <h2 style={{
-              marginBottom: 'var(--spacing-5)',
-              textAlign: 'center',
-              letterSpacing: '-0.025em'
-            }}>
-              Frequently Asked Questions
-            </h2>
-            <FAQ />
-          </motion.div>
-        </div>
-      </section>
-    </>
-  )
-}
-
-function ServicePackage({ 
-  name, 
-  price, 
-  color, 
-  glowClass, 
-  features, 
-  calendlyUrl, 
-  description, 
-  featured 
-}: {
-  name: string
-  price: string
-  color: string
-  glowClass: string
-  features: string[]
-  calendlyUrl: string
-  description: string
-  featured?: boolean
-}) {
-  return (
-    <motion.div
-      variants={staggerItemVariants}
-      className="package-card"
-      whileHover={{ y: -8 }}
-      style={{
-        padding: 'var(--spacing-8) var(--spacing-6)',
-        position: 'relative',
-        background: featured ? 'rgba(255, 255, 255, 0.04)' : 'rgba(255, 255, 255, 0.02)',
-        border: featured ? `1px solid ${color}30` : '1px solid rgba(255, 255, 255, 0.08)',
-        borderRadius: 'var(--radius-lg)',
-        transition: 'all 0.3s var(--ease-standard)',
-        backdropFilter: 'blur(24px)',
-        WebkitBackdropFilter: 'blur(24px)'
-      }}
-    >
-      {featured && (
-        <div style={{
-          position: 'absolute',
-          top: '-12px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          background: color,
-          color: '#000',
-          padding: '4px 12px',
-          borderRadius: 'var(--radius-full)',
-          fontSize: '0.75rem',
-          fontWeight: 700,
-          textTransform: 'uppercase'
-        }}>
-          Most Popular
-        </div>
-      )}
-
-      <div style={{ marginBottom: 'var(--spacing-5)' }}>
-        <h3 style={{
-          fontSize: '1.75rem',
-          marginBottom: 'var(--spacing-2)',
-          fontWeight: 700,
-          letterSpacing: '-0.02em'
-        }}>
-          {name}
-        </h3>
-        <p style={{
-          fontSize: '0.9375rem',
-          color: 'var(--text-secondary)',
-          marginBottom: 'var(--spacing-4)'
-        }}>
-          {description}
-        </p>
-        <div style={{ marginBottom: 'var(--spacing-4)' }}>
-          <span style={{ fontSize: '3rem', fontWeight: 800, color: color }}>
-            AED {price}
-          </span>
-          <p style={{ fontSize: '0.9375rem', color: 'var(--text-tertiary)' }}>
-            One-time optimization
-          </p>
-        </div>
-      </div>
-
-      <ul style={{ marginBottom: 'var(--spacing-6)', listStyle: 'none', padding: 0 }}>
-        {features.map((feature, i) => (
-          <li key={i} style={{
-            padding: 'var(--spacing-2) 0',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
-            fontSize: '0.9375rem',
-            color: 'var(--text-secondary)'
-          }}>
-            ✓ {feature}
-          </li>
-        ))}
-      </ul>
-
-      <a
-        href={calendlyUrl}
-        target="_blank"
-        rel="noopener noreferrer"
+    <div style={{
+      minHeight: '100vh',
+      padding: 'var(--spacing-4) var(--spacing-4) var(--spacing-8)',
+      paddingTop: 'calc(80px + var(--spacing-6))'
+    }}>
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
         style={{
-          display: 'block',
           width: '100%',
-          padding: 'var(--spacing-3)',
-          background: `linear-gradient(135deg, ${color}, ${color}dd)`,
-          color: '#000',
-          border: 'none',
-          borderRadius: 'var(--radius-md)',
-          fontWeight: 700,
-          fontSize: '1rem',
-          cursor: 'pointer',
-          transition: 'all 0.2s var(--ease-standard)',
-          textAlign: 'center',
-          textDecoration: 'none'
+          maxWidth: '1400px',
+          margin: '0 auto'
         }}
-        onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(0.98)'}
-        onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
       >
-        Schedule Now
-      </a>
-    </motion.div>
-  )
-}
+        {/* Hero Image Section */}
+        <motion.div
+          variants={itemVariants}
+          style={{
+            width: '100%',
+            marginBottom: 'var(--spacing-8)',
+            position: 'relative'
+          }}
+        >
+          {/* Ambient glow - Only animate if motion is allowed */}
+          {!shouldReduceMotion && (
+            <motion.div
+              style={{
+                position: 'absolute',
+                inset: '-40px',
+                background: 'radial-gradient(ellipse at center, rgba(232, 153, 0, 0.12) 0%, transparent 60%)',
+                borderRadius: 'var(--radius-2xl)',
+                filter: 'blur(60px)',
+                zIndex: 0,
+                pointerEvents: 'none'
+              }}
+              animate={{
+                opacity: [0.4, 0.7, 0.4],
+                scale: [0.98, 1.02, 0.98]
+              }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
+          )}
 
-function ComparisonTable() {
-  const features = [
-    { name: 'Session Duration', quick: '1 hour', full: '2-3 hours', extreme: '4-6 hours' },
-    { name: 'Windows Optimization', quick: '✓', full: '✓', extreme: '✓' },
-    { name: 'GPU Drivers', quick: '✓', full: '✓', extreme: '✓' },
-    { name: 'BIOS Optimization', quick: '—', full: 'Guided', extreme: 'Deep' },
-    { name: 'RAM Tuning', quick: '—', full: 'Basic', extreme: 'Advanced' },
-    { name: 'Network Config', quick: 'Basic', full: 'Advanced', extreme: 'Expert' },
-  ]
+          <motion.img
+            src="/packages-canva.png"
+            alt="FPSOS Service Packages"
+            variants={itemVariants}
+            whileHover={!shouldReduceMotion ? { scale: 1.005 } : {}}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            style={{
+              width: '100%',
+              height: 'auto',
+              display: 'block',
+              position: 'relative',
+              zIndex: 1,
+              borderRadius: 'var(--radius-xl)',
+              filter: 'drop-shadow(0 24px 64px rgba(0, 0, 0, 0.4))'
+            }}
+          />
+        </motion.div>
 
-  return (
-    <div style={{ overflowX: 'auto' }}>
-      <table style={{
-        width: '100%',
-        borderCollapse: 'collapse',
-        fontSize: '0.9375rem'
-      }}>
-        <thead>
-          <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
-            <th style={{ padding: '16px', textAlign: 'left', color: 'var(--text-secondary)' }}>Feature</th>
-            <th style={{ padding: '16px', textAlign: 'center', color: 'var(--quick-fix)' }}>Quick Fix</th>
-            <th style={{ padding: '16px', textAlign: 'center', color: 'var(--full-tune)' }}>Full Tune</th>
-            <th style={{ padding: '16px', textAlign: 'center', color: 'var(--extreme)' }}>Extreme</th>
-          </tr>
-        </thead>
-        <tbody>
-          {features.map((feature, i) => (
-            <tr key={i} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)' }}>
-              <td style={{ padding: '16px', color: 'var(--text-primary)' }}>{feature.name}</td>
-              <td style={{ padding: '16px', textAlign: 'center', color: 'var(--text-secondary)' }}>{feature.quick}</td>
-              <td style={{ padding: '16px', textAlign: 'center', color: 'var(--text-secondary)' }}>{feature.full}</td>
-              <td style={{ padding: '16px', textAlign: 'center', color: 'var(--text-secondary)' }}>{feature.extreme}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+        {/* Package Cards Grid */}
+        <motion.div
+          variants={itemVariants}
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 340px), 1fr))',
+            gap: 'var(--spacing-5)',
+            marginBottom: 'var(--spacing-8)'
+          }}
+        >
+          <PackageCard
+            title="Quick Remote Fix"
+            subtitle="Fast Solutions"
+            price="AED 199"
+            features={[
+              'No Optimization, Just Solutions',
+              'Ideal for crashes & freezing',
+              'Fast help, no fluff',
+              '1 Support Session (30 Days)',
+              'Avg: ~1 Hour'
+            ]}
+            url="https://calendly.com/fpsoptimizationstation/quickremotefix"
+            color="#00CCBC"
+            delay={0.1}
+          />
+          <PackageCard
+            title="Full System Tune-Up"
+            subtitle="Most Popular"
+            price="AED 399"
+            features={[
+              'Subtick-Optimized Settings',
+              'GPU driver optimization',
+              'Windows power/latency tuning',
+              'Network jitter reduction',
+              '2 Support Sessions (30 Days)',
+              'Avg: ~2-3 Hours'
+            ]}
+            url="https://calendly.com/fpsoptimizationstation/fullsystemtuneup"
+            color="#FF5A00"
+            delay={0.2}
+            popular
+          />
+          <PackageCard
+            title="Extreme BIOSPRIME"
+            subtitle="Maximum Performance"
+            price="AED 699"
+            features={[
+              'Advanced BIOS/UEFI Config',
+              'Memory timing optimization',
+              'CPU power delivery tuning',
+              'Everything from Full Tune-Up',
+              '3 Support Sessions (30 Days)',
+              'Avg: ~4-5 Hours'
+            ]}
+            url="https://calendly.com/fpsoptimizationstation/extremebiosprime"
+            color="#FEEE00"
+            delay={0.3}
+          />
+        </motion.div>
+
+        {/* Support Info Banner */}
+        <motion.div
+          variants={itemVariants}
+          style={{
+            textAlign: 'center',
+            padding: 'var(--spacing-4) var(--spacing-5)',
+            background: 'rgba(255, 255, 255, 0.03)',
+            backdropFilter: 'blur(24px)',
+            WebkitBackdropFilter: 'blur(24px)',
+            borderRadius: 'var(--radius-xl)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            fontSize: '0.9375rem',
+            color: 'var(--text-secondary)',
+            lineHeight: 1.7,
+            maxWidth: '900px',
+            margin: '0 auto'
+          }}
+        >
+          <span style={{ color: 'var(--fpsos-orange)', marginRight: '8px' }}>✓</span>
+          30-day support validity
+          <span style={{ margin: '0 12px', opacity: 0.4 }}>•</span>
+          Remote via AnyDesk/TeamViewer
+          <span style={{ margin: '0 12px', opacity: 0.4 }}>•</span>
+          Before/after benchmarks included
+        </motion.div>
+      </motion.div>
     </div>
   )
 }
 
-function FAQ() {
-  const faqs = [
-    {
-      q: 'Is this safe for my hardware?',
-      a: 'Absolutely. We only apply safe, tested optimizations. Your system warranty remains intact.'
-    },
-    {
-      q: 'How long do improvements last?',
-      a: 'Permanent until driver/BIOS updates. We provide full documentation of every change.'
-    },
-    {
-      q: 'What hardware do you support?',
-      a: 'AMD Ryzen systems (especially X3D) and NVIDIA GPUs. Contact us for Intel configurations.'
-    },
-    {
-      q: 'What if I don\'t see improvements?',
-      a: '48-hour money-back guarantee if we don\'t deliver measurable before/after improvements.'
-    },
-    {
-      q: 'How does remote optimization work?',
-      a: 'We use secure remote desktop (AnyDesk/TeamViewer) with your permission. Watch every change.'
-    },
-    {
-      q: 'Do you offer follow-up support?',
-      a: 'Yes. All packages include follow-up support via WhatsApp and Discord.'
-    }
-  ]
+interface PackageCardProps {
+  title: string
+  subtitle: string
+  price: string
+  features: string[]
+  url: string
+  color: string
+  delay: number
+  popular?: boolean
+}
+
+function PackageCard({ title, subtitle, price, features, url, color, delay, popular }: PackageCardProps) {
+  const shouldReduceMotion = useReducedMotion()
 
   return (
-    <motion.div 
+    <motion.div
+      variants={cardVariants}
+      whileHover={!shouldReduceMotion ? {
+        y: -8,
+        transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] }
+      } : {}}
       style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 'var(--spacing-3)'
+        position: 'relative',
+        isolation: 'isolate',
+        height: '100%'
       }}
-      variants={staggerContainerVariants}
-      initial="initial"
-      whileInView="animate"
-      viewport={{ once: true }}
     >
-      {faqs.map((faq, i) => (
-        <motion.div 
-          key={i} 
-          variants={staggerItemVariants}
-          whileHover={{ y: -2 }}
+      {/* Card glow effect on hover */}
+      <motion.div
+        style={{
+          position: 'absolute',
+          inset: '-24px',
+          background: `radial-gradient(circle at 50% 0%, ${color}40, transparent 65%)`,
+          filter: 'blur(48px)',
+          opacity: 0,
+          zIndex: -1,
+          pointerEvents: 'none'
+        }}
+        whileHover={!shouldReduceMotion ? { opacity: 0.7 } : {}}
+        transition={{ duration: 0.4 }}
+      />
+
+      <motion.a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        whileTap={!shouldReduceMotion ? { scale: 0.98 } : {}}
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          padding: 'var(--spacing-7) var(--spacing-6) var(--spacing-6)',
+          background: popular
+            ? `linear-gradient(135deg, ${color}0A, rgba(255, 255, 255, 0.025))`
+            : 'linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02))',
+          backdropFilter: 'blur(32px) saturate(150%)',
+          WebkitBackdropFilter: 'blur(32px) saturate(150%)',
+          border: popular
+            ? `2.5px solid ${color}`
+            : `1.5px solid ${color}50`,
+          borderRadius: 'var(--radius-2xl)',
+          textDecoration: 'none',
+          position: 'relative',
+          overflow: 'hidden',
+          cursor: 'pointer',
+          transition: 'all 0.35s cubic-bezier(0.22, 1, 0.36, 1)',
+          boxShadow: popular
+            ? `0 12px 40px ${color}30, 0 4px 12px rgba(0, 0, 0, 0.3)`
+            : '0 8px 32px rgba(0, 0, 0, 0.25)'
+        }}
+      >
+        {/* Gradient top border accent */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: '3px',
+          background: `linear-gradient(90deg, ${color}, ${color}80, transparent)`,
+          opacity: 0.9
+        }} />
+
+        {/* Subtle inner glow */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: '120px',
+          background: `radial-gradient(ellipse at top, ${color}08, transparent)`,
+          pointerEvents: 'none'
+        }} />
+
+        {/* Popular badge */}
+        {popular && (
+          <motion.div
+            initial={{ scale: 0.85, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: delay + 0.35, duration: 0.5, ease: [0.34, 1.56, 0.64, 1] }}
+            style={{
+              position: 'absolute',
+              top: 'var(--spacing-5)',
+              right: 'var(--spacing-5)',
+              padding: '7px 16px',
+              background: color,
+              color: '#000',
+              fontSize: '0.6875rem',
+              fontWeight: 900,
+              borderRadius: 'var(--radius-full)',
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              boxShadow: `0 6px 16px ${color}70, inset 0 1px 0 rgba(255,255,255,0.3)`,
+              border: '1px solid rgba(255,255,255,0.2)'
+            }}
+          >
+            {subtitle}
+          </motion.div>
+        )}
+
+        {/* Header Section */}
+        <div style={{ marginBottom: 'var(--spacing-3)' }}>
+          <h3 style={{
+            fontSize: '1.625rem',
+            fontWeight: 800,
+            color: 'var(--text-primary)',
+            marginBottom: 'var(--spacing-1)',
+            fontFamily: 'var(--font-display)',
+            letterSpacing: '-0.025em',
+            lineHeight: 1.15
+          }}>
+            {title}
+          </h3>
+          {!popular && (
+            <p style={{
+              fontSize: '0.75rem',
+              color: 'var(--text-tertiary)',
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              letterSpacing: '0.08em',
+              opacity: 0.7
+            }}>
+              {subtitle}
+            </p>
+          )}
+        </div>
+
+        {/* Price Display */}
+        <div style={{
+          fontSize: '3.25rem',
+          fontWeight: 900,
+          color,
+          fontFamily: 'var(--font-display)',
+          letterSpacing: '-0.04em',
+          lineHeight: 0.95,
+          marginBottom: 'var(--spacing-6)',
+          textShadow: `0 0 48px ${color}50, 0 4px 16px ${color}30`,
+          filter: 'brightness(1.1)'
+        }}>
+          {price}
+        </div>
+
+        {/* Features List */}
+        <ul style={{
+          listStyle: 'none',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 'var(--spacing-3)',
+          flex: 1,
+          marginBottom: 'var(--spacing-6)',
+          paddingLeft: '4px'
+        }}>
+          {features.map((feature, i) => (
+            <motion.li
+              key={i}
+              initial={{ opacity: 0, x: -12 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{
+                delay: delay + 0.45 + (i * 0.06),
+                duration: 0.5,
+                ease: [0.22, 1, 0.36, 1]
+              }}
+              style={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: 'var(--spacing-2)',
+                fontSize: '0.9375rem',
+                color: 'var(--text-secondary)',
+                lineHeight: 1.65,
+                fontWeight: 500
+              }}
+            >
+              <span style={{
+                color,
+                fontSize: '1.25rem',
+                lineHeight: 0.9,
+                marginTop: '1px',
+                flexShrink: 0,
+                fontWeight: 600,
+                textShadow: `0 0 12px ${color}60`
+              }}>✓</span>
+              <span>{feature}</span>
+            </motion.li>
+          ))}
+        </ul>
+
+        {/* CTA Button */}
+        <motion.div
+          whileHover={!shouldReduceMotion ? {
+            scale: 1.03,
+            boxShadow: `0 8px 24px ${color}60, inset 0 1px 0 rgba(255,255,255,0.3)`
+          } : {}}
+          whileTap={!shouldReduceMotion ? { scale: 0.97 } : {}}
           style={{
-            background: 'rgba(255, 255, 255, 0.02)',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
-            borderRadius: 'var(--radius-lg)',
-            padding: 'var(--spacing-4)',
-            transition: 'all 0.25s var(--ease-standard)',
-            backdropFilter: 'blur(12px)',
-            WebkitBackdropFilter: 'blur(12px)',
-            cursor: 'default'
+            padding: 'var(--spacing-3) var(--spacing-4)',
+            background: color,
+            color: '#000',
+            textAlign: 'center',
+            borderRadius: 'var(--radius-xl)',
+            fontWeight: 900,
+            fontSize: '1rem',
+            textTransform: 'uppercase',
+            letterSpacing: '0.1em',
+            fontFamily: 'var(--font-display)',
+            boxShadow: `0 6px 20px ${color}50, inset 0 1px 0 rgba(255,255,255,0.25)`,
+            transition: 'all 0.25s cubic-bezier(0.22, 1, 0.36, 1)',
+            border: '1px solid rgba(255,255,255,0.15)',
+            position: 'relative',
+            overflow: 'hidden'
           }}
         >
-          <h4 style={{
-            marginBottom: 'var(--spacing-2)',
-            color: 'var(--text-primary)',
-            fontSize: '1.125rem',
-            fontWeight: 700,
-            letterSpacing: '-0.015em'
-          }}>
-            {faq.q}
-          </h4>
-          <p style={{
-            color: 'var(--text-secondary)',
-            lineHeight: 1.6,
-            fontSize: '0.9375rem',
-            fontWeight: 400,
-            letterSpacing: '-0.011em'
-          }}>
-            {faq.a}
-          </p>
+          <span style={{ position: 'relative', zIndex: 1 }}>BOOK NOW →</span>
+          {/* Button shimmer effect */}
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: '-100%',
+            width: '100%',
+            height: '100%',
+            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
+            animation: !shouldReduceMotion ? 'shimmer 3s infinite' : 'none'
+          }} />
         </motion.div>
-      ))}
+      </motion.a>
     </motion.div>
   )
 }

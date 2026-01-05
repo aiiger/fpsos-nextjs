@@ -281,50 +281,52 @@ export default function Home() {
       }}>
         <AnimatePresence>
           {isLoaded && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.85, rotateX: 15 }}
-              animate={{ opacity: 1, scale: 1, rotateX: 0 }}
-              transition={{
-                duration: 1.5,
-                delay: 0.6,
-                ease: [0.19, 1, 0.22, 1]
-              }}
-              style={{
-                perspective: '1000px',
-                transformStyle: 'preserve-3d'
-              }}
-            >
-              <motion.img
-                src="/hero-canva.png"
-                alt="FPSOS Hero"
-                whileHover={{
-                  scale: 1.03,
-                  rotateY: 2,
-                  rotateX: -2,
-                  transition: { duration: 0.4, ease: "easeOut" }
-                }}
-                animate={{
-                  y: [0, -15, 0],
-                }}
+            <Link href="/packages" style={{ display: 'block' }}>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.85, rotateX: 15 }}
+                animate={{ opacity: 1, scale: 1, rotateX: 0 }}
                 transition={{
-                  y: {
-                    duration: 6,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }
+                  duration: 1.5,
+                  delay: 0.6,
+                  ease: [0.19, 1, 0.22, 1]
                 }}
                 style={{
-                  width: '100%',
-                  maxWidth: '1400px',
-                  height: 'auto',
-                  display: 'block',
-                  filter: 'drop-shadow(0 30px 80px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 40px rgba(232, 153, 0, 0.3))',
-                  cursor: 'pointer',
-                  borderRadius: '20px',
+                  perspective: '1000px',
                   transformStyle: 'preserve-3d'
                 }}
-              />
-            </motion.div>
+              >
+                <motion.img
+                  src="/hero-canva.png"
+                  alt="FPSOS Hero"
+                  whileHover={{
+                    scale: 1.03,
+                    rotateY: 2,
+                    rotateX: -2,
+                    transition: { duration: 0.4, ease: "easeOut" }
+                  }}
+                  animate={{
+                    y: [0, -15, 0],
+                  }}
+                  transition={{
+                    y: {
+                      duration: 6,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }
+                  }}
+                  style={{
+                    width: '100%',
+                    maxWidth: '1400px',
+                    height: 'auto',
+                    display: 'block',
+                    filter: 'drop-shadow(0 30px 80px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 40px rgba(232, 153, 0, 0.3))',
+                    cursor: 'pointer',
+                    borderRadius: '20px',
+                    transformStyle: 'preserve-3d'
+                  }}
+                />
+              </motion.div>
+            </Link>
           )}
         </AnimatePresence>
       </div>

@@ -367,13 +367,34 @@ function SocialIconEnhanced({ href, icon, delay, color }: { href: string; icon: 
       target="_blank"
       rel="noopener noreferrer"
       initial={{ scale: 0, opacity: 0, rotateZ: -180 }}
-      animate={{ scale: 1, opacity: 1, rotateZ: 0 }}
+      animate={{ 
+        scale: 1, 
+        opacity: 1, 
+        rotateZ: 0,
+        y: [0, -8, 0]
+      }}
       transition={{
-        delay: 0.8 + delay,
-        duration: 0.6,
-        type: "spring",
-        stiffness: 200,
-        damping: 15
+        scale: {
+          delay: 0.8 + delay,
+          duration: 0.6,
+          type: "spring",
+          stiffness: 200,
+          damping: 15
+        },
+        opacity: {
+          delay: 0.8 + delay,
+          duration: 0.6
+        },
+        rotateZ: {
+          delay: 0.8 + delay,
+          duration: 0.6
+        },
+        y: {
+          duration: 3,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: delay
+        }
       }}
       whileHover={{
         scale: 1.25,
@@ -383,17 +404,6 @@ function SocialIconEnhanced({ href, icon, delay, color }: { href: string; icon: 
       whileTap={{ 
         scale: 0.9,
         rotateZ: -15
-      }}
-      animate={{
-        y: [0, -8, 0]
-      }}
-      transition={{
-        y: {
-          duration: 3,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: delay
-        }
       }}
       style={{
         fontSize: '2.5rem',

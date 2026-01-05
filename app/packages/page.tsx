@@ -59,57 +59,21 @@ export default function PackagesPage() {
     <div style={{
       minHeight: '100vh',
       display: 'flex',
-      flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: 'var(--spacing-8) var(--spacing-4)',
-      paddingTop: 'calc(64px + var(--spacing-8))',
-      background: 'var(--bg-void)'
+      padding: 'calc(var(--spacing-10) + 40px) var(--spacing-4) var(--spacing-12)',
+      background: 'radial-gradient(circle at top, rgba(232, 153, 0, 0.18), transparent 45%), linear-gradient(160deg, #040404 0%, #07000f 50%, #040404 100%)'
     }}>
-      <div style={{ maxWidth: '1400px', width: '100%' }}>
-        <div style={{
-          width: '100%',
-          aspectRatio: '16 / 9',
-          position: 'relative',
-          borderRadius: 'var(--radius-xl)',
-          overflow: 'hidden',
-          marginBottom: 'var(--spacing-8)',
-          background: 'rgba(255, 255, 255, 0.03)',
-          border: '1px solid rgba(255, 255, 255, 0.08)'
-        }}>
-          <img
-            src="/packages-canva.png"
-            alt="FPSOS Packages"
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'contain',
-              display: 'block'
-            }}
-          />
-        </div>
-
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-          gap: 'var(--spacing-4)',
-          marginBottom: 'var(--spacing-8)'
-        }}>
-          {packages.map((pkg) => (
-            <PackageCard key={pkg.title} {...pkg} />
-          ))}
-        </div>
-      </div>
-
       <div style={{
-        display: 'flex',
-        gap: 'var(--spacing-4)',
-        alignItems: 'center',
-        marginTop: 'var(--spacing-8)'
+        maxWidth: '1200px',
+        width: '100%',
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+        gap: 'var(--spacing-4)'
       }}>
-        <SocialIcon href="https://discord.gg/K3A6MkNXT9" label="Discord" emoji="💬" />
-        <SocialIcon href="https://wa.link/jtku16" label="WhatsApp" emoji="📱" />
-        <SocialIcon href="https://instagram.com/fpsoptimizationstation" label="Instagram" emoji="📷" />
+        {packages.map((pkg) => (
+          <PackageCard key={pkg.title} {...pkg} />
+        ))}
       </div>
     </div>
   )
@@ -118,37 +82,30 @@ export default function PackagesPage() {
 function PackageCard({ title, price, features, bookingUrl, color }: Package) {
   return (
     <motion.div
-      whileHover={{ y: -6, scale: 1.01 }}
-      transition={{ duration: 0.2, ease: 'easeOut' }}
+      whileHover={{ y: -8, scale: 1.01 }}
+      transition={{ duration: 0.25, ease: 'easeOut' }}
       style={{
-        background: 'rgba(255, 255, 255, 0.05)',
-        backdropFilter: 'blur(20px)',
-        border: `2px solid ${color}40`,
-        borderRadius: 'var(--radius-lg)',
+        background: '#090909',
+        border: `2px solid ${color}`,
+        borderRadius: 'var(--radius-xl)',
         padding: 'var(--spacing-5)',
         display: 'flex',
         flexDirection: 'column',
         gap: 'var(--spacing-4)',
         position: 'relative',
         overflow: 'hidden',
-        transition: 'all 0.2s var(--ease-standard)'
+        transition: 'all 0.25s var(--ease-standard)',
+        boxShadow: `0 30px 60px ${color}15`,
+        backgroundImage: `linear-gradient(160deg, ${color}15 0%, rgba(0,0,0,0) 55%)`
       }}
     >
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        height: '4px',
-        background: color
-      }} />
-
       <div>
         <h3 style={{
           fontSize: '1.5rem',
           fontWeight: 800,
           marginBottom: 'var(--spacing-2)',
-          fontFamily: 'var(--font-display)'
+          fontFamily: 'var(--font-display)',
+          color: '#ffffff'
         }}>
           {title}
         </h3>
@@ -178,7 +135,7 @@ function PackageCard({ title, price, features, bookingUrl, color }: Package) {
             alignItems: 'flex-start',
             gap: 'var(--spacing-2)',
             fontSize: '0.9375rem',
-            color: 'var(--text-secondary)',
+            color: '#f3f3f3',
             lineHeight: 1.5
           }}>
             <span style={{ color, fontSize: '1.25rem', lineHeight: 1 }}>✓</span>
@@ -197,13 +154,14 @@ function PackageCard({ title, price, features, bookingUrl, color }: Package) {
           padding: 'var(--spacing-3)',
           background: color,
           color: '#000',
-          fontWeight: 700,
+          fontWeight: 800,
           fontSize: '1rem',
           borderRadius: 'var(--radius-md)',
           textDecoration: 'none',
-          transition: 'all 0.2s var(--ease-standard)',
+          transition: 'all 0.25s var(--ease-standard)',
           textTransform: 'uppercase',
-          letterSpacing: '0.05em'
+          letterSpacing: '0.05em',
+          boxShadow: `0 12px 40px ${color}40`
         }}
       >
         Book Now
@@ -212,21 +170,3 @@ function PackageCard({ title, price, features, bookingUrl, color }: Package) {
   )
 }
 
-function SocialIcon({ href, emoji, label }: { href: string; emoji: string; label: string }) {
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={label}
-      style={{
-        opacity: 0.85,
-        transition: 'opacity 0.2s',
-        fontSize: '2rem',
-        textDecoration: 'none'
-      }}
-    >
-      {emoji}
-    </a>
-  )
-}

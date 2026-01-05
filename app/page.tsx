@@ -218,45 +218,10 @@ export default function Home() {
           borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
           boxShadow: '0 4px 30px rgba(0, 0, 0, 0.3)',
           display: 'flex',
-          justifyContent: 'space-between',
+          justifyContent: 'flex-end',
           alignItems: 'center'
         }}
       >
-        {/* PACKAGES Link */}
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          <Link
-            href="/packages"
-            style={{
-              color: '#ffffff',
-              fontSize: '1.5rem',
-              fontWeight: 800,
-              textDecoration: 'none',
-              fontFamily: 'var(--font-display)',
-              letterSpacing: '0.15em',
-              textShadow: '0 2px 10px rgba(232, 153, 0, 0.5)',
-              position: 'relative',
-              display: 'inline-block'
-            }}
-          >
-            <motion.span
-              animate={{
-                textShadow: [
-                  '0 2px 10px rgba(232, 153, 0, 0.5)',
-                  '0 4px 20px rgba(232, 153, 0, 0.8)',
-                  '0 2px 10px rgba(232, 153, 0, 0.5)'
-                ]
-              }}
-              transition={{ duration: 2, repeat: Infinity }}
-            >
-              PACKAGES
-            </motion.span>
-          </Link>
-        </motion.div>
-
-        {/* Social Icons */}
         <div style={{
           display: 'flex',
           gap: '28px',
@@ -296,8 +261,8 @@ export default function Home() {
                 }}
               >
                 <motion.img
-                  src="/hero-canva.png"
-                  alt="FPSOS Hero"
+                  src="/frame-up.png"
+                  alt="FPSOS Landing"
                   whileHover={{
                     scale: 1.03,
                     rotateY: 2,

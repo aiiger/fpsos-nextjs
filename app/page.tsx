@@ -104,229 +104,131 @@ export default function Home() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          paddingTop: 'var(--spacing-12)',
-          paddingBottom: 'var(--spacing-12)'
+          paddingTop: 'var(--spacing-8)',
+          paddingBottom: 'var(--spacing-12)',
+          background: 'linear-gradient(180deg, rgba(104, 0, 54, 0.05) 0%, transparent 100%)'
         }}
       >
         <div className="container">
-          <motion.div 
-            style={{
-              textAlign: 'center',
-              maxWidth: '1100px',
-              margin: '0 auto'
-            }}
-            variants={staggerContainerVariants}
-            initial="initial"
-            animate="animate"
-          >
-            {/* Logo */}
-            <motion.div style={{ marginBottom: 'var(--spacing-6)' }} variants={staggerItemVariants}>
-              <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--spacing-3)', marginBottom: 'var(--spacing-3)' }}>
-                <motion.div 
-                  style={{
-                    width: '64px',
-                    height: '64px',
-                    background: 'linear-gradient(135deg, var(--fpsos-purple), var(--fpsos-orange))',
-                    borderRadius: 'var(--radius-lg)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontWeight: 900,
-                    fontSize: '2rem',
-                    color: '#000',
-                    boxShadow: '0 8px 32px rgba(232, 153, 0, 0.3), 0 4px 12px rgba(104, 0, 54, 0.2)'
-                  }}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  F
-                </motion.div>
-                <div style={{ textAlign: 'left' }}>
-                  <div style={{
-                    fontFamily: 'var(--font-display)',
-                    fontSize: 'clamp(2.5rem, 5vw, 3rem)',
-                    fontWeight: 900,
-                    letterSpacing: '-0.03em',
-                    background: 'linear-gradient(135deg, #ffffff 0%, var(--fpsos-orange) 100%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text'
-                  }}>
-                    FPSOS
-                  </div>
-                  <div style={{
-                    fontSize: '0.75rem',
-                    color: 'var(--text-tertiary)',
-                    fontWeight: 600,
-                    letterSpacing: '0.15em',
-                    textTransform: 'uppercase',
-                    marginTop: 'var(--spacing-1)'
-                  }}>
-                    Frame Per Second OS
-                  </div>
-                </div>
+          {/* Before/After Hero */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr auto 1fr',
+            alignItems: 'center',
+            gap: 'var(--spacing-8)',
+            maxWidth: '1400px',
+            margin: '0 auto'
+          }}>
+            {/* Before - Stressed */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              style={{
+                textAlign: 'center'
+              }}
+            >
+              <div style={{
+                fontSize: '8rem',
+                marginBottom: 'var(--spacing-4)',
+                opacity: 0.6,
+                filter: 'grayscale(1)'
+              }}>
+                😫
+              </div>
+              <p style={{
+                fontSize: '1.125rem',
+                color: 'var(--text-secondary)',
+                fontWeight: 600,
+                letterSpacing: '-0.011em'
+              }}>
+                Low FPS<br />High Latency<br />Inconsistent Frame Times
+              </p>
+            </motion.div>
+
+            {/* Center - FPSOS Logo & Text */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              style={{
+                textAlign: 'center',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              <h1 style={{
+                fontSize: 'clamp(5rem, 15vw, 12rem)',
+                fontWeight: 900,
+                background: 'linear-gradient(135deg, var(--fpsos-purple) 0%, var(--fpsos-orange) 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                letterSpacing: '-0.03em',
+                lineHeight: 1,
+                marginBottom: 'var(--spacing-6)'
+              }}>
+                FPSOS
+              </h1>
+              <div style={{
+                display: 'inline-block',
+                padding: 'var(--spacing-2) var(--spacing-4)',
+                background: 'rgba(232, 153, 0, 0.1)',
+                border: '1px solid rgba(232, 153, 0, 0.3)',
+                borderRadius: 'var(--radius-full)',
+                fontSize: '0.875rem',
+                color: 'var(--fpsos-orange)',
+                fontWeight: 700,
+                letterSpacing: '-0.008em'
+              }}>
+                🎮 Optimized for CS2 Competitive Gaming
               </div>
             </motion.div>
 
-            {/* Badge */}
-            <motion.div 
+            {/* After - Happy */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
               style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                padding: 'var(--spacing-1) var(--spacing-3)',
-                background: 'rgba(232, 153, 0, 0.08)',
-                border: '1px solid rgba(232, 153, 0, 0.15)',
-                borderRadius: 'var(--radius-full)',
-                marginBottom: 'var(--spacing-5)',
-                fontSize: '0.8125rem',
-                fontWeight: 600,
-                color: 'var(--fpsos-orange)',
-                backdropFilter: 'blur(8px)'
+                textAlign: 'center'
               }}
-              variants={staggerItemVariants}
             >
-              🎮 Optimized for CS2 Competitive Gaming
-            </motion.div>
-
-            {/* Headline */}
-            <motion.h1 
-              style={{
-                fontSize: 'clamp(2.5rem, 8vw, 5.5rem)',
-                fontWeight: 900,
-                letterSpacing: '-0.03em',
-                lineHeight: 1.08,
+              <div style={{
+                fontSize: '8rem',
                 marginBottom: 'var(--spacing-4)',
-                background: 'linear-gradient(135deg, #ffffff 0%, var(--fpsos-orange) 50%, var(--fpsos-purple) 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text'
-              }}
-              variants={staggerItemVariants}
-            >
-              Frame Per Second Operating System
-            </motion.h1>
-
-            {/* Description */}
-            <motion.p 
-              style={{
-                fontSize: 'clamp(1rem, 2.5vw, 1.5rem)',
-                color: 'var(--text-secondary)',
-                lineHeight: 1.6,
-                marginBottom: 'var(--spacing-8)',
-                maxWidth: '700px',
-                margin: '0 auto var(--spacing-8)',
+                filter: 'saturate(1.2)'
+              }}>
+                😎
+              </div>
+              <p style={{
+                fontSize: '1.125rem',
+                color: 'var(--fpsos-orange)',
+                fontWeight: 600,
                 letterSpacing: '-0.011em'
-              }}
-              variants={staggerItemVariants}
-            >
-              Professional CS2 optimization. Lower latency, higher frame time consistency, maximum competitive edge.
-            </motion.p>
-
-            {/* CTA */}
-            <motion.div 
-              style={{
-                display: 'flex',
-                gap: 'var(--spacing-2)',
-                justifyContent: 'center',
-                flexWrap: 'wrap',
-                marginBottom: 'var(--spacing-10)'
-              }}
-              variants={staggerItemVariants}
-            >
-              <motion.a 
-                href="/diagnostic" 
-                style={{
-                  display: 'inline-flex',
-                  padding: 'var(--spacing-3) var(--spacing-6)',
-                  background: 'linear-gradient(135deg, var(--fpsos-purple), var(--fpsos-orange))',
-                  color: '#ffffff',
-                  textDecoration: 'none',
-                  borderRadius: 'var(--radius-md)',
-                  fontWeight: 700,
-                  fontSize: '1.0625rem',
-                  cursor: 'pointer',
-                  border: 'none'
-                }}
-                whileHover={{ scale: 0.97, boxShadow: '0 12px 32px rgba(232, 153, 0, 0.4)' }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Run Free Diagnostic
-              </motion.a>
-              <motion.a 
-                href="/packages"
-                style={{
-                  display: 'inline-flex',
-                  padding: 'var(--spacing-3) var(--spacing-6)',
-                  background: 'rgba(232, 153, 0, 0.15)',
-                  color: 'var(--fpsos-orange)',
-                  textDecoration: 'none',
-                  border: '1px solid rgba(232, 153, 0, 0.3)',
-                  borderRadius: 'var(--radius-md)',
-                  fontWeight: 700,
-                  fontSize: '1.0625rem',
-                  cursor: 'pointer'
-                }}
-                whileHover={{ scale: 0.97, borderColor: 'var(--fpsos-orange)', background: 'rgba(232, 153, 0, 0.25)' }}
-                whileTap={{ scale: 0.95 }}
-              >
-                View Packages
-              </motion.a>
+              }}>
+                360+ FPS<br />Lower Latency<br />Stable Frame Times
+              </p>
             </motion.div>
+          </div>
 
-            {/* Stats */}
-            <motion.div 
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-                gap: 'var(--spacing-3)',
-                maxWidth: '900px',
-                margin: '0 auto'
-              }}
-              variants={staggerContainerVariants}
-              initial="initial"
-              animate="animate"
-            >
-              {[
-                { label: '100+', detail: 'Systems Optimized' },
-                { label: '+40%', detail: 'Avg FPS Increase', color: 'var(--quick-fix)' },
-                { label: '24/7', detail: 'Remote Support', color: 'var(--full-tune)' }
-              ].map((stat, i) => (
-                <motion.div 
-                  key={i}
-                  style={{
-                    padding: 'var(--spacing-5)',
-                    background: 'rgba(255, 255, 255, 0.04)',
-                    border: '1px solid rgba(255, 255, 255, 0.08)',
-                    borderRadius: 'var(--radius-lg)',
-                    textAlign: 'center',
-                    backdropFilter: 'blur(20px)'
-                  }}
-                  variants={scaleInVariants}
-                  whileHover={{ 
-                    scale: 1.05,
-                    borderColor: 'rgba(232, 153, 0, 0.2)',
-                    background: 'rgba(255, 255, 255, 0.06)'
-                  }}
-                >
-                  <div style={{
-                    fontSize: '2.5rem',
-                    fontWeight: 900,
-                    color: stat.color || 'var(--fpsos-orange)',
-                    marginBottom: 'var(--spacing-1)'
-                  }}>
-                    {stat.label}
-                  </div>
-                  <div style={{
-                    fontSize: '0.9375rem',
-                    color: 'var(--text-secondary)',
-                    fontWeight: 600
-                  }}>
-                    {stat.detail}
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
-          </motion.div>
+          {/* Tagline */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            style={{
+              textAlign: 'center',
+              fontSize: 'clamp(1.125rem, 2vw, 1.5rem)',
+              color: 'var(--text-secondary)',
+              lineHeight: 1.6,
+              letterSpacing: '-0.011em',
+              maxWidth: '800px',
+              margin: 'var(--spacing-12) auto 0',
+              fontWeight: 400
+            }}
+          >
+            Professional CS2 optimization. Lower latency, higher frame time consistency, maximum competitive edge.
+          </motion.p>
         </div>
       </motion.section>
 

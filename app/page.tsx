@@ -6,6 +6,94 @@ import { staggerContainerVariants, staggerItemVariants, scaleInVariants } from '
 export default function Home() {
   return (
     <>
+      {/* FPSOS Header */}
+      <section style={{
+        background: 'linear-gradient(135deg, rgba(104, 0, 54, 0.1), rgba(232, 153, 0, 0.05))',
+        borderBottom: '1px solid rgba(232, 153, 0, 0.2)',
+        padding: 'var(--spacing-4) var(--spacing-6)',
+        position: 'relative'
+      }}>
+        <div className="container" style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          maxWidth: '1200px',
+          margin: '0 auto'
+        }}>
+          {/* Logo/Brand */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 'var(--spacing-3)'
+          }}>
+            <div style={{
+              fontSize: '1.75rem',
+              fontWeight: 800,
+              background: 'linear-gradient(135deg, var(--fpsos-orange) 0%, var(--fpsos-purple) 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              letterSpacing: '-0.02em'
+            }}>
+              FPSOS
+            </div>
+            <div style={{
+              fontSize: '0.75rem',
+              color: 'var(--text-tertiary)',
+              fontWeight: 600,
+              letterSpacing: '0.05em',
+              textTransform: 'uppercase'
+            }}>
+              Frame Per Second<br />Operating System
+            </div>
+          </div>
+
+          {/* Contact Info */}
+          <div style={{
+            display: 'flex',
+            gap: 'var(--spacing-4)',
+            alignItems: 'center'
+          }}>
+            <a
+              href="https://discord.gg/your-discord"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 'var(--spacing-2)',
+                color: 'var(--text-secondary)',
+                textDecoration: 'none',
+                transition: 'color 0.2s var(--ease-standard)',
+                fontSize: '0.9375rem'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.color = 'var(--fpsos-orange)'}
+              onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}
+            >
+              <span style={{ fontSize: '1.25rem' }}>💬</span>
+              Discord
+            </a>
+            <a
+              href="tel:+971-your-number"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 'var(--spacing-2)',
+                color: 'var(--text-secondary)',
+                textDecoration: 'none',
+                transition: 'color 0.2s var(--ease-standard)',
+                fontSize: '0.9375rem'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.color = 'var(--fpsos-orange)'}
+              onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}
+            >
+              <span style={{ fontSize: '1.25rem' }}>☎️</span>
+              Contact
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* Hero Section */}
       <motion.section 
         initial={{ opacity: 0 }}

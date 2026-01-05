@@ -1,446 +1,571 @@
 'use client'
 
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion, useMotionValue, useTransform, animate, useSpring } from 'framer-motion'
+import { useEffect, useState } from 'react'
 
-// Animation variants
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.12,
-      delayChildren: 0.2
-    }
-  }
-}
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 24 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.6,
-      ease: [0.22, 1, 0.36, 1] // Custom easing for smoothness
+      staggerChildren: 0.2,
+      delayChildren: 0.3
     }
   }
 }
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: {
+    opacity: 0,
+    y: 60,
+    scale: 0.95
+  },
   visible: {
     opacity: 1,
     y: 0,
+    scale: 1,
     transition: {
-      duration: 0.7,
+      duration: 0.8,
       ease: [0.22, 1, 0.36, 1]
     }
   }
 }
 
 export default function PackagesPage() {
-  const shouldReduceMotion = useReducedMotion()
+  const mouseX = useMotionValue(0)
+  const mouseY = useMotionValue(0)
+
+  const springConfig = { damping: 25, stiffness: 150 }
+  const x = useSpring(mouseX, springConfig)
+  const y = useSpring(mouseY, springConfig)
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      mouseX.set(e.clientX)
+      mouseY.set(e.clientY)
+    }
+    window.addEventListener('mousemove', handleMouseMove)
+    return () => window.removeEventListener('mousemove', handleMouseMove)
+  }, [mouseX, mouseY])
 
   return (
     <div style={{
       minHeight: '100vh',
-      padding: 'var(--spacing-4) var(--spacing-4) var(--spacing-8)',
-      paddingTop: 'calc(80px + var(--spacing-6))'
+      position: 'relative',
+      overflow: 'hidden'
     }}>
+      {/* Animated Gradient Background */}
       <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
+        animate={{
+          background: [
+            'linear-gradient(135deg, #680036 0%, #000b58 100%)',
+            'linear-gradient(135deg, #000b58 0%, #680036 100%)',
+            'linear-gradient(135deg, #680036 0%, #000b58 100%)'
+          ]
+        }}
+        transition={{
+          duration: 20,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
         style={{
-          width: '100%',
-          maxWidth: '1400px',
+          position: 'absolute',
+          inset: 0,
+          zIndex: 0
+        }}
+      />
+
+      {/* Interactive Cursor Glow */}
+      <motion.div
+        style={{
+          position: 'fixed',
+          left: x,
+          top: y,
+          width: '400px',
+          height: '400px',
+          background: 'radial-gradient(circle, rgba(232, 153, 0, 0.15) 0%, transparent 70%)',
+          borderRadius: '50%',
+          filter: 'blur(60px)',
+          pointerEvents: 'none',
+          zIndex: 5,
+          transform: 'translate(-50%, -50%)'
+        }}
+      />
+
+      {/* Floating Particles */}
+      {[...Array(15)].map((_, i) => (
+        <motion.div
+          key={i}
+          animate={{
+            y: [0, -30, 0],
+            opacity: [0.2, 0.5, 0.2],
+            scale: [1, 1.2, 1]
+          }}
+          transition={{
+            duration: 3 + i * 0.5,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: i * 0.2
+          }}
+          style={{
+            position: 'absolute',
+            left: `${(i * 6) + 10}%`,
+            top: `${(i * 5) + 15}%`,
+            width: `${2 + (i % 3)}px`,
+            height: `${2 + (i % 3)}px`,
+            background: i % 2 === 0 ? 'rgba(232, 153, 0, 0.6)' : 'rgba(255, 255, 255, 0.4)',
+            borderRadius: '50%',
+            filter: 'blur(1px)',
+            zIndex: 2
+          }}
+        />
+      ))}
+
+      {/* Floating Gradient Orbs */}
+      <motion.div
+        animate={{
+          scale: [1, 1.3, 1],
+          x: [0, 80, 0],
+          y: [0, -60, 0],
+          opacity: [0.25, 0.4, 0.25]
+        }}
+        transition={{
+          duration: 18,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+        style={{
+          position: 'absolute',
+          top: '5%',
+          right: '10%',
+          width: '700px',
+          height: '700px',
+          background: 'radial-gradient(circle, rgba(232, 153, 0, 0.2) 0%, transparent 70%)',
+          borderRadius: '50%',
+          filter: 'blur(90px)',
+          zIndex: 1
+        }}
+      />
+
+      <motion.div
+        animate={{
+          scale: [1, 1.2, 1],
+          x: [0, -60, 0],
+          y: [0, 70, 0],
+          opacity: [0.2, 0.35, 0.2]
+        }}
+        transition={{
+          duration: 22,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 3
+        }}
+        style={{
+          position: 'absolute',
+          bottom: '5%',
+          left: '8%',
+          width: '600px',
+          height: '600px',
+          background: 'radial-gradient(circle, rgba(104, 0, 54, 0.25) 0%, transparent 70%)',
+          borderRadius: '50%',
+          filter: 'blur(90px)',
+          zIndex: 1
+        }}
+      />
+
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+        style={{
+          position: 'relative',
+          zIndex: 10,
+          padding: '140px 60px 100px',
+          maxWidth: '1500px',
           margin: '0 auto'
         }}
       >
-        {/* Hero Image Section */}
         <motion.div
-          variants={itemVariants}
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
           style={{
-            width: '100%',
-            marginBottom: 'var(--spacing-8)',
-            position: 'relative'
-          }}
-        >
-          {/* Ambient glow - Only animate if motion is allowed */}
-          {!shouldReduceMotion && (
-            <motion.div
-              style={{
-                position: 'absolute',
-                inset: '-40px',
-                background: 'radial-gradient(ellipse at center, rgba(232, 153, 0, 0.12) 0%, transparent 60%)',
-                borderRadius: 'var(--radius-2xl)',
-                filter: 'blur(60px)',
-                zIndex: 0,
-                pointerEvents: 'none'
-              }}
-              animate={{
-                opacity: [0.4, 0.7, 0.4],
-                scale: [0.98, 1.02, 0.98]
-              }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            />
-          )}
-
-          <motion.img
-            src="/packages-canva.png"
-            alt="FPSOS Service Packages"
-            variants={itemVariants}
-            whileHover={!shouldReduceMotion ? { scale: 1.005 } : {}}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            style={{
-              width: '100%',
-              height: 'auto',
-              display: 'block',
-              position: 'relative',
-              zIndex: 1,
-              borderRadius: 'var(--radius-xl)',
-              filter: 'drop-shadow(0 24px 64px rgba(0, 0, 0, 0.4))'
-            }}
-          />
-        </motion.div>
-
-        {/* Package Cards Grid */}
-        <motion.div
-          variants={itemVariants}
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 340px), 1fr))',
-            gap: 'var(--spacing-5)',
-            marginBottom: 'var(--spacing-8)'
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '50px'
           }}
         >
           <PackageCard
             title="Quick Remote Fix"
-            subtitle="Fast Solutions"
-            price="AED 199"
+            description="No Optimization, Just Solutions. Ideal if your PC is crashing, freezing or shutting down unexpectedly. Fast help, no fluff."
+            price={199}
             features={[
-              'No Optimization, Just Solutions',
-              'Ideal for crashes & freezing',
-              'Fast help, no fluff',
-              '1 Support Session (30 Days)',
-              'Avg: ~1 Hour'
+              '1 Support Session (Valid 30 Days)',
+              'Avg Completion: ~1 Hour',
+              'Diagnose common PC issues: crashes, shutdowns, freezes',
+              'Some issues may need follow-up sessions'
             ]}
             url="https://calendly.com/fpsoptimizationstation/quickremotefix"
-            color="#00CCBC"
-            delay={0.1}
           />
           <PackageCard
             title="Full System Tune-Up"
-            subtitle="Most Popular"
-            price="AED 399"
+            description="For competitive gaming. Your all-in-one performance boost: faster FPS, lower latency, and smoother gameplay."
+            price={399}
             features={[
-              'Subtick-Optimized Settings',
-              'GPU driver optimization',
-              'Windows power/latency tuning',
-              'Network jitter reduction',
-              '2 Support Sessions (30 Days)',
-              'Avg: ~2-3 Hours'
+              'Full optimization: Windows, BIOS, GPU & network',
+              'Smart overclocking/undervolting (CPU/GPU/RAM)',
+              '4 Support Tickets (Valid 30 Days)',
+              'Stability & Stress Testing to guarantee results'
             ]}
             url="https://calendly.com/fpsoptimizationstation/fullsystemtuneup"
-            color="#FF5A00"
-            delay={0.2}
-            popular
           />
           <PackageCard
             title="Extreme BIOSPRIME"
-            subtitle="Maximum Performance"
-            price="AED 699"
+            description="Extreme BIOS Tuning for Elite Performance. Targeted BIOS tuning for the lowest latency and best RAM timings possible. Perfect for competitive players & enthusiasts."
+            price={699}
             features={[
-              'Advanced BIOS/UEFI Config',
-              'Memory timing optimization',
-              'CPU power delivery tuning',
-              'Everything from Full Tune-Up',
-              '3 Support Sessions (30 Days)',
-              'Avg: ~4-5 Hours'
+              'BIOS-only performance tuning',
+              'Manual RAM timing optimization',
+              'Guided stress testing for each stage',
+              'Sessions split as needed to ensure stability'
             ]}
             url="https://calendly.com/fpsoptimizationstation/extremebiosprime"
-            color="#FEEE00"
-            delay={0.3}
           />
         </motion.div>
+      </motion.div>
 
-        {/* Support Info Banner */}
+      {/* Footer */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.2, duration: 0.8 }}
+        style={{
+          position: 'fixed',
+          bottom: '36px',
+          left: 0,
+          right: 0,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: '48px',
+          zIndex: 100,
+          backdropFilter: 'blur(20px)',
+          padding: '16px',
+          background: 'rgba(0, 0, 0, 0.1)',
+          borderRadius: '50px',
+          maxWidth: 'fit-content',
+          margin: '0 auto'
+        }}
+      >
         <motion.div
-          variants={itemVariants}
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 1.3, duration: 0.6 }}
           style={{
-            textAlign: 'center',
-            padding: 'var(--spacing-4) var(--spacing-5)',
-            background: 'rgba(255, 255, 255, 0.03)',
-            backdropFilter: 'blur(24px)',
-            WebkitBackdropFilter: 'blur(24px)',
-            borderRadius: 'var(--radius-xl)',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
-            fontSize: '0.9375rem',
-            color: 'var(--text-secondary)',
-            lineHeight: 1.7,
-            maxWidth: '900px',
-            margin: '0 auto'
+            color: '#ffffff',
+            fontSize: '0.75rem',
+            fontWeight: 700,
+            letterSpacing: '0.12em',
+            textTransform: 'uppercase',
+            fontFamily: 'var(--font-display)'
           }}
         >
-          <span style={{ color: 'var(--fpsos-orange)', marginRight: '8px' }}>✓</span>
-          30-day support validity
-          <span style={{ margin: '0 12px', opacity: 0.4 }}>•</span>
-          Remote via AnyDesk/TeamViewer
-          <span style={{ margin: '0 12px', opacity: 0.4 }}>•</span>
-          Before/after benchmarks included
+          FPS OPTIMIZATION STATION
         </motion.div>
+
+        <motion.a
+          href="/packages"
+          whileHover={{ scale: 1.05, backgroundColor: 'rgba(0, 11, 88, 0.8)' }}
+          whileTap={{ scale: 0.95 }}
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 1.4, duration: 0.6 }}
+          style={{
+            color: '#ffffff',
+            fontSize: '0.875rem',
+            fontWeight: 700,
+            textDecoration: 'none',
+            padding: '12px 28px',
+            background: 'rgba(0, 11, 88, 0.6)',
+            borderRadius: '12px',
+            border: '1.5px solid rgba(255, 255, 255, 0.25)',
+            textTransform: 'uppercase',
+            letterSpacing: '0.08em',
+            fontFamily: 'var(--font-display)',
+            transition: 'all 0.2s'
+          }}
+        >
+          PACKAGES
+        </motion.a>
+
+        <SocialIcons />
       </motion.div>
+
+      {/* Bottom Disclaimer */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.5, duration: 0.8 }}
+        style={{
+          position: 'fixed',
+          bottom: '8px',
+          left: 0,
+          right: 0,
+          textAlign: 'center',
+          color: 'rgba(255, 255, 255, 0.25)',
+          fontSize: '0.6875rem',
+          letterSpacing: '0.18em',
+          textTransform: 'uppercase',
+          fontWeight: 600,
+          fontFamily: 'var(--font-display)'
+        }}
+      >
+        NO EXTREME OVERCLOCKING—ONLY SAFE, TESTED OPTIMIZATIONS. SESSIONS
+      </motion.div>
+    </div>
+  )
+}
+
+function SocialIcons() {
+  const icons = [
+    { href: 'https://discord.gg/K3A6MkNXT9', emoji: '💬' },
+    { href: 'https://wa.link/jtku16', emoji: '📱' },
+    { href: 'https://calendly.com/fpsoptimizationstation', emoji: '📅' },
+    { href: 'https://instagram.com/fpsoptimizationstation', emoji: '📷' }
+  ]
+
+  return (
+    <div style={{ display: 'flex', gap: '24px' }}>
+      {icons.map((icon, i) => (
+        <motion.a
+          key={icon.href}
+          href={icon.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{
+            delay: 1.5 + (i * 0.1),
+            duration: 0.4,
+            type: "spring",
+            stiffness: 300
+          }}
+          whileHover={{
+            scale: 1.2,
+            rotate: [0, -8, 8, 0],
+            transition: { duration: 0.3 }
+          }}
+          whileTap={{ scale: 0.9 }}
+          style={{
+            fontSize: '1.75rem',
+            filter: 'drop-shadow(0 0 8px rgba(255, 255, 255, 0.3))'
+          }}
+        >
+          {icon.emoji}
+        </motion.a>
+      ))}
     </div>
   )
 }
 
 interface PackageCardProps {
   title: string
-  subtitle: string
-  price: string
+  description: string
+  price: number
   features: string[]
   url: string
-  color: string
-  delay: number
-  popular?: boolean
 }
 
-function PackageCard({ title, subtitle, price, features, url, color, delay, popular }: PackageCardProps) {
-  const shouldReduceMotion = useReducedMotion()
+function PackageCard({ title, description, price, features, url }: PackageCardProps) {
+  return (
+    <motion.a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      variants={cardVariants}
+      whileHover={{
+        scale: 1.02,
+        y: -8,
+        boxShadow: '0 30px 80px rgba(0, 0, 0, 0.5)',
+        transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] }
+      }}
+      whileTap={{ scale: 0.98 }}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '50px',
+        padding: '50px 60px',
+        background: 'rgba(0, 0, 0, 0.2)',
+        backdropFilter: 'blur(15px)',
+        border: '2px solid rgba(255, 255, 255, 0.25)',
+        borderRadius: '60px',
+        textDecoration: 'none',
+        cursor: 'pointer',
+        position: 'relative',
+        overflow: 'hidden',
+        boxShadow: '0 15px 50px rgba(0, 0, 0, 0.3)',
+        transition: 'all 0.3s cubic-bezier(0.22, 1, 0.36, 1)'
+      }}
+    >
+      {/* Animated Glow Effect */}
+      <motion.div
+        animate={{
+          opacity: [0.3, 0.6, 0.3],
+          scale: [1, 1.05, 1]
+        }}
+        transition={{
+          duration: 3,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+        style={{
+          position: 'absolute',
+          inset: -2,
+          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%)',
+          borderRadius: 'inherit',
+          pointerEvents: 'none'
+        }}
+      />
+
+      {/* Left: Title and Description */}
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.3, duration: 0.6 }}
+        style={{
+          flex: '0 0 340px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '14px',
+          position: 'relative',
+          zIndex: 1
+        }}
+      >
+        <h2 style={{
+          fontSize: '2.25rem',
+          fontWeight: 700,
+          color: '#ffffff',
+          margin: 0,
+          fontFamily: 'var(--font-display)',
+          lineHeight: 1.15,
+          letterSpacing: '-0.02em',
+          textShadow: '0 2px 10px rgba(0, 0, 0, 0.3)'
+        }}>
+          {title}
+        </h2>
+        <p style={{
+          fontSize: '1rem',
+          color: 'rgba(255, 255, 255, 0.85)',
+          margin: 0,
+          lineHeight: 1.6
+        }}>
+          {description}
+        </p>
+      </motion.div>
+
+      {/* Middle: Features */}
+      <motion.ul
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.4, duration: 0.6 }}
+        style={{
+          flex: 1,
+          listStyle: 'none',
+          margin: 0,
+          padding: 0,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '12px',
+          position: 'relative',
+          zIndex: 1
+        }}
+      >
+        {features.map((feature, i) => (
+          <motion.li
+            key={i}
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.5 + (i * 0.08), duration: 0.5 }}
+            style={{
+              fontSize: '1rem',
+              color: 'rgba(255, 255, 255, 0.9)',
+              lineHeight: 1.5,
+              paddingLeft: '24px',
+              position: 'relative'
+            }}
+          >
+            <span style={{
+              position: 'absolute',
+              left: 0,
+              top: '3px',
+              fontSize: '1.25rem',
+              color: 'rgba(255, 255, 255, 0.7)'
+            }}>•</span>
+            {feature}
+          </motion.li>
+        ))}
+      </motion.ul>
+
+      {/* Right: Animated Price */}
+      <div style={{
+        flex: '0 0 240px',
+        textAlign: 'right',
+        position: 'relative',
+        zIndex: 1
+      }}>
+        <AnimatedPrice price={price} />
+      </div>
+    </motion.a>
+  )
+}
+
+function AnimatedPrice({ price }: { price: number }) {
+  const [hasAnimated, setHasAnimated] = useState(false)
+  const count = useMotionValue(0)
+  const rounded = useTransform(count, Math.round)
+
+  useEffect(() => {
+    if (!hasAnimated) {
+      const controls = animate(count, price, {
+        duration: 2,
+        delay: 0.6,
+        ease: [0.22, 1, 0.36, 1]
+      })
+      setHasAnimated(true)
+      return controls.stop
+    }
+  }, [count, price, hasAnimated])
 
   return (
     <motion.div
-      variants={cardVariants}
-      whileHover={!shouldReduceMotion ? {
-        y: -8,
-        transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] }
-      } : {}}
-      style={{
-        position: 'relative',
-        isolation: 'isolate',
-        height: '100%'
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{
+        delay: 0.4,
+        duration: 0.6,
+        ease: [0.34, 1.56, 0.64, 1]
       }}
     >
-      {/* Card glow effect on hover */}
-      <motion.div
-        style={{
-          position: 'absolute',
-          inset: '-24px',
-          background: `radial-gradient(circle at 50% 0%, ${color}40, transparent 65%)`,
-          filter: 'blur(48px)',
-          opacity: 0,
-          zIndex: -1,
-          pointerEvents: 'none'
-        }}
-        whileHover={!shouldReduceMotion ? { opacity: 0.7 } : {}}
-        transition={{ duration: 0.4 }}
-      />
-
-      <motion.a
-        href={url}
-        target="_blank"
-        rel="noopener noreferrer"
-        whileTap={!shouldReduceMotion ? { scale: 0.98 } : {}}
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          height: '100%',
-          padding: 'var(--spacing-7) var(--spacing-6) var(--spacing-6)',
-          background: popular
-            ? `linear-gradient(135deg, ${color}0A, rgba(255, 255, 255, 0.025))`
-            : 'linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02))',
-          backdropFilter: 'blur(32px) saturate(150%)',
-          WebkitBackdropFilter: 'blur(32px) saturate(150%)',
-          border: popular
-            ? `2.5px solid ${color}`
-            : `1.5px solid ${color}50`,
-          borderRadius: 'var(--radius-2xl)',
-          textDecoration: 'none',
-          position: 'relative',
-          overflow: 'hidden',
-          cursor: 'pointer',
-          transition: 'all 0.35s cubic-bezier(0.22, 1, 0.36, 1)',
-          boxShadow: popular
-            ? `0 12px 40px ${color}30, 0 4px 12px rgba(0, 0, 0, 0.3)`
-            : '0 8px 32px rgba(0, 0, 0, 0.25)'
-        }}
-      >
-        {/* Gradient top border accent */}
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          height: '3px',
-          background: `linear-gradient(90deg, ${color}, ${color}80, transparent)`,
-          opacity: 0.9
-        }} />
-
-        {/* Subtle inner glow */}
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          height: '120px',
-          background: `radial-gradient(ellipse at top, ${color}08, transparent)`,
-          pointerEvents: 'none'
-        }} />
-
-        {/* Popular badge */}
-        {popular && (
-          <motion.div
-            initial={{ scale: 0.85, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: delay + 0.35, duration: 0.5, ease: [0.34, 1.56, 0.64, 1] }}
-            style={{
-              position: 'absolute',
-              top: 'var(--spacing-5)',
-              right: 'var(--spacing-5)',
-              padding: '7px 16px',
-              background: color,
-              color: '#000',
-              fontSize: '0.6875rem',
-              fontWeight: 900,
-              borderRadius: 'var(--radius-full)',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              boxShadow: `0 6px 16px ${color}70, inset 0 1px 0 rgba(255,255,255,0.3)`,
-              border: '1px solid rgba(255,255,255,0.2)'
-            }}
-          >
-            {subtitle}
-          </motion.div>
-        )}
-
-        {/* Header Section */}
-        <div style={{ marginBottom: 'var(--spacing-3)' }}>
-          <h3 style={{
-            fontSize: '1.625rem',
-            fontWeight: 800,
-            color: 'var(--text-primary)',
-            marginBottom: 'var(--spacing-1)',
-            fontFamily: 'var(--font-display)',
-            letterSpacing: '-0.025em',
-            lineHeight: 1.15
-          }}>
-            {title}
-          </h3>
-          {!popular && (
-            <p style={{
-              fontSize: '0.75rem',
-              color: 'var(--text-tertiary)',
-              fontWeight: 700,
-              textTransform: 'uppercase',
-              letterSpacing: '0.08em',
-              opacity: 0.7
-            }}>
-              {subtitle}
-            </p>
-          )}
-        </div>
-
-        {/* Price Display */}
-        <div style={{
-          fontSize: '3.25rem',
-          fontWeight: 900,
-          color,
-          fontFamily: 'var(--font-display)',
-          letterSpacing: '-0.04em',
-          lineHeight: 0.95,
-          marginBottom: 'var(--spacing-6)',
-          textShadow: `0 0 48px ${color}50, 0 4px 16px ${color}30`,
-          filter: 'brightness(1.1)'
-        }}>
-          {price}
-        </div>
-
-        {/* Features List */}
-        <ul style={{
-          listStyle: 'none',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 'var(--spacing-3)',
-          flex: 1,
-          marginBottom: 'var(--spacing-6)',
-          paddingLeft: '4px'
-        }}>
-          {features.map((feature, i) => (
-            <motion.li
-              key={i}
-              initial={{ opacity: 0, x: -12 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{
-                delay: delay + 0.45 + (i * 0.06),
-                duration: 0.5,
-                ease: [0.22, 1, 0.36, 1]
-              }}
-              style={{
-                display: 'flex',
-                alignItems: 'flex-start',
-                gap: 'var(--spacing-2)',
-                fontSize: '0.9375rem',
-                color: 'var(--text-secondary)',
-                lineHeight: 1.65,
-                fontWeight: 500
-              }}
-            >
-              <span style={{
-                color,
-                fontSize: '1.25rem',
-                lineHeight: 0.9,
-                marginTop: '1px',
-                flexShrink: 0,
-                fontWeight: 600,
-                textShadow: `0 0 12px ${color}60`
-              }}>✓</span>
-              <span>{feature}</span>
-            </motion.li>
-          ))}
-        </ul>
-
-        {/* CTA Button */}
-        <motion.div
-          whileHover={!shouldReduceMotion ? {
-            scale: 1.03,
-            boxShadow: `0 8px 24px ${color}60, inset 0 1px 0 rgba(255,255,255,0.3)`
-          } : {}}
-          whileTap={!shouldReduceMotion ? { scale: 0.97 } : {}}
-          style={{
-            padding: 'var(--spacing-3) var(--spacing-4)',
-            background: color,
-            color: '#000',
-            textAlign: 'center',
-            borderRadius: 'var(--radius-xl)',
-            fontWeight: 900,
-            fontSize: '1rem',
-            textTransform: 'uppercase',
-            letterSpacing: '0.1em',
-            fontFamily: 'var(--font-display)',
-            boxShadow: `0 6px 20px ${color}50, inset 0 1px 0 rgba(255,255,255,0.25)`,
-            transition: 'all 0.25s cubic-bezier(0.22, 1, 0.36, 1)',
-            border: '1px solid rgba(255,255,255,0.15)',
-            position: 'relative',
-            overflow: 'hidden'
-          }}
-        >
-          <span style={{ position: 'relative', zIndex: 1 }}>BOOK NOW →</span>
-          {/* Button shimmer effect */}
-          <div style={{
-            position: 'absolute',
-            top: 0,
-            left: '-100%',
-            width: '100%',
-            height: '100%',
-            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
-            animation: !shouldReduceMotion ? 'shimmer 3s infinite' : 'none'
-          }} />
-        </motion.div>
-      </motion.a>
+      <div style={{
+        fontSize: '1.75rem',
+        fontWeight: 700,
+        color: '#ffffff',
+        marginBottom: '8px',
+        letterSpacing: '0.05em'
+      }}>
+        AED
+      </div>
+      <motion.div style={{
+        fontSize: '5rem',
+        fontWeight: 900,
+        color: '#ffffff',
+        fontFamily: 'var(--font-display)',
+        lineHeight: 0.9,
+        letterSpacing: '-0.03em',
+        textShadow: '0 4px 20px rgba(0, 0, 0, 0.4)'
+      }}>
+        {rounded}
+      </motion.div>
     </motion.div>
   )
 }

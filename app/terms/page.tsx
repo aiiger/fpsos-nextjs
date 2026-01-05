@@ -1,6 +1,6 @@
 export default function TermsPage() {
   return (
-    <main>
+    <>
       <section className="section" style={{ paddingTop: '140px' }}>
         <div className="container" style={{ maxWidth: '900px' }}>
           <h1 style={{ marginBottom: '48px', textAlign: 'center' }}>
@@ -194,7 +194,7 @@ export default function TermsPage() {
           </div>
         </div>
       </section>
-    </main>
+    </>
   )
 }
 

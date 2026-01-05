@@ -56,7 +56,7 @@ export default function DiagnosticPage() {
   }
 
   return (
-    <main>
+    <>
       <section className="section" style={{
         paddingTop: 'calc(64px + var(--spacing-10))',
         paddingBottom: 'var(--spacing-12)',
@@ -173,7 +173,7 @@ export default function DiagnosticPage() {
           to { transform: rotate(360deg); }
         }
       `}</style>
-    </main>
+    </>
   )
 }
 
@@ -394,7 +394,7 @@ function detectGPU() {
     )
 
     const hasWebGL2 = !!canvas.getContext('webgl2')
-    const maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE)
+    const maxTextureSize = gl && 'getParameter' in gl ? (gl as WebGLRenderingContext).getParameter((gl as WebGLRenderingContext).MAX_TEXTURE_SIZE) : 4096
 
     let status: 'good' | 'warning' | 'critical'
     const details: string[] = []
@@ -650,8 +650,8 @@ async function testNetworkJitter(): Promise<any> {
   const stdDev = Math.sqrt(variance)
 
   // Calculate percentiles for CS2 hitbox analysis
-  const p95 = sortedDelays[Math.floor(sortedDelays.length * 0.95)]
-  const p99 = sortedDelays[Math.floor(sortedDelays.length * 0.99)]
+  const p95 = sortedDelays[Math.floor(sortedDelays.length * 0.95)] || avgDelay
+  const p99 = sortedDelays[Math.floor(sortedDelays.length * 0.99)] || avgDelay
 
   // Packet loss
   const packetLoss = ((tests - validDelays.length) / tests) * 100
@@ -676,16 +676,16 @@ async function testNetworkJitter(): Promise<any> {
     details.push(
       `Latency: ${avgDelay.toFixed(1)}ms avg, ${medianDelay.toFixed(0)}ms median`,
       `Jitter: ${stdDev.toFixed(1)}ms (excellent - <3ms)`,
-      `Stability: 95th percentile ${p95.toFixed(0)}ms`,
+      `Stability: 95th percentile ${(p95 as number).toFixed(0)}ms`,
       'Network is competitive-ready - very low jitter',
-      packetLoss === 0 ? 'Zero packet loss detected' : `Packet loss: ${packetLoss.toFixed(1)}%`
+      packetLoss === 0 ? 'Zero packet loss detected' : `Packet loss: ${(packetLoss as number).toFixed(1)}%`
     )
   } else if (stdDev < 8 && avgDelay < 50 && packetLoss < 1) {
     status = 'good'
     details.push(
       `Latency: ${avgDelay.toFixed(1)}ms avg, ${medianDelay.toFixed(0)}ms median`,
       `Jitter: ${stdDev.toFixed(1)}ms (good for competitive)`,
-      `99th percentile: ${p99.toFixed(0)}ms`,
+      `99th percentile: ${(p99 as number).toFixed(0)}ms`,
       packetLoss > 0 ? `Minor packet loss: ${packetLoss.toFixed(1)}%` : 'No packet loss',
       'Network quality sufficient for CS2, minor optimization possible'
     )
@@ -704,7 +704,7 @@ async function testNetworkJitter(): Promise<any> {
     details.push(
       `Latency: ${avgDelay.toFixed(1)}ms avg (high variance: ${minDelay.toFixed(0)}-${maxDelay.toFixed(0)}ms)`,
       `Jitter: ${stdDev.toFixed(1)}ms (critical - severely affects gameplay)`,
-      `99th percentile: ${p99.toFixed(0)}ms (spikes hurt consistency)`,
+      `99th percentile: ${(p99 as number).toFixed(0)}ms (spikes hurt consistency)`,
       packetLoss > 0 ? `Packet loss: ${packetLoss.toFixed(1)}%` : '',
       'This jitter causes shots to miss and enemies to teleport',
       'Fix: Use ethernet, close background apps, check router QoS',
@@ -779,7 +779,7 @@ function testFrameTiming() {
           details.push(
             `Browser: ${avgFps.toFixed(1)} fps avg (${avgFrameTime.toFixed(2)}ms frame time)`,
             `Consistency: ${stdDev.toFixed(2)}ms stddev (excellent - very stable)`,
-            `Frame pacing: 99th percentile ${p99.toFixed(1)}ms`,
+            `Frame pacing: 99th percentile ${(p99 as number).toFixed(1)}ms`,
             `Monitor: ${refreshRate}Hz detected`,
             'System shows excellent frame time stability',
             'Good indicator for CS2 performance potential'
@@ -800,7 +800,7 @@ function testFrameTiming() {
             `Browser: ${avgFps.toFixed(1)} fps avg`,
             `Frame variance: ${stdDev.toFixed(2)}ms stddev (inconsistent)`,
             `Stutters: ${stutterPercentage.toFixed(1)}% (affects smoothness)`,
-            `99th percentile: ${p99.toFixed(1)}ms`,
+            `99th percentile: ${(p99 as number).toFixed(1)}ms`,
             'Noticeable frame time variance detected',
             'Possible causes: background apps, CPU thermal throttling',
             'In CS2, this manifests as microstutters and input lag'
@@ -811,7 +811,7 @@ function testFrameTiming() {
             `Browser: ${avgFps.toFixed(1)} fps avg (high variance)`,
             `Frame time inconsistency: ${stdDev.toFixed(2)}ms stddev`,
             `Stutters: ${stutterPercentage.toFixed(1)}% of frames`,
-            `Frame time range: ${p1.toFixed(1)}ms - ${p99.toFixed(1)}ms`,
+            `Frame time range: ${(p1 as number).toFixed(1)}ms - ${(p99 as number).toFixed(1)}ms`,
             'Severe frame pacing issues detected',
             'Likely causes: thermal throttling, background processes, driver issues',
             'This WILL cause stuttering and poor CS2 performance',

@@ -2,7 +2,7 @@
 
 export default function PrivacyPage() {
   return (
-    <main>
+    <>
       <section className="section" style={{
         paddingTop: 'calc(64px + var(--spacing-10))',
         paddingBottom: 'var(--spacing-12)'
@@ -210,7 +210,7 @@ export default function PrivacyPage() {
           </div>
         </div>
       </section>
-    </main>
+    </>
   )
 }
 

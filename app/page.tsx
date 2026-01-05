@@ -5,7 +5,7 @@ import { staggerContainerVariants, staggerItemVariants, scaleInVariants } from '
 
 export default function Home() {
   return (
-    <main>
+    <>
       {/* Hero Section */}
       <motion.section 
         initial={{ opacity: 0 }}
@@ -317,7 +317,7 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
-    </main>
+    </>
   )
 }
 
@@ -353,3 +353,4 @@ function FeatureCard({ icon, title, description, color }: any) {
     </motion.div>
   )
 }
+

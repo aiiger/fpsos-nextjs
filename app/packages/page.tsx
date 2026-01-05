@@ -1,17 +1,17 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { staggerContainerVariants, staggerItemVariants, scaleInVariants } from '@/lib/animations'
+import { staggerContainerVariants, staggerItemVariants } from '@/lib/animations'
 
 export default function PackagesPage() {
   return (
-    <main>
+    <>
       <section className="section" style={{
         paddingTop: 'calc(64px + var(--spacing-10))',
         paddingBottom: 'var(--spacing-12)'
       }}>
         <div className="container">
-          {/* Header - Apple-refined elegance */}
+          {/* Header */}
           <motion.div 
             style={{
               textAlign: 'center',
@@ -34,9 +34,7 @@ export default function PackagesPage() {
               fontSize: '0.8125rem',
               fontWeight: 600,
               color: 'var(--fpsos-orange)',
-              letterSpacing: '-0.008em',
-              backdropFilter: 'blur(8px)',
-              WebkitBackdropFilter: 'blur(8px)'
+              letterSpacing: '-0.008em'
             }}>
               Professional CS2 Optimization Services
             </div>
@@ -72,6 +70,7 @@ export default function PackagesPage() {
             </p>
           </motion.div>
 
+          {/* Service Packages Grid */}
           <motion.div 
             style={{
               display: 'grid',
@@ -136,19 +135,17 @@ export default function PackagesPage() {
               calendlyUrl="https://calendly.com/fpsoptimizationstation/extremebiosprime"
               description="Maximum performance for enthusiasts"
             />
-          </div>
+          </motion.div>
 
-          {/* Trust Guarantees - Apple-refined trust section */}
+          {/* Trust Guarantees */}
           <div style={{
             marginBottom: 'var(--spacing-10)',
             background: 'linear-gradient(135deg, rgba(232, 153, 0, 0.04), rgba(104, 0, 54, 0.04))',
             border: '1px solid rgba(232, 153, 0, 0.12)',
-            borderRadius: 'var(--radius-2xl)',
+            borderRadius: 'var(--radius-lg)',
             padding: 'var(--spacing-8) var(--spacing-6)',
             maxWidth: '1000px',
-            margin: '0 auto var(--spacing-10)',
-            backdropFilter: 'blur(16px)',
-            WebkitBackdropFilter: 'blur(16px)'
+            margin: '0 auto var(--spacing-10)'
           }}>
             <h2 style={{
               textAlign: 'center',
@@ -156,91 +153,46 @@ export default function PackagesPage() {
               fontSize: 'clamp(1.75rem, 3vw, 2.25rem)',
               letterSpacing: '-0.025em'
             }}>
-              Our <span style={{ color: 'var(--fpsos-orange)' }}>Commitment</span> to You
+              Our <span style={{ color: 'var(--fpsos-orange)' }}>Commitment</span>
             </h2>
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
               gap: 'var(--spacing-5)'
             }}>
               <div style={{ textAlign: 'center' }}>
-                <div style={{
-                  fontSize: '2.25rem',
-                  marginBottom: 'var(--spacing-3)',
-                  lineHeight: 1
-                }}>✓</div>
-                <h4 style={{
-                  marginBottom: 'var(--spacing-2)',
-                  fontSize: '1.125rem',
-                  fontWeight: 700,
-                  color: 'var(--text-primary)',
-                  letterSpacing: '-0.015em'
-                }}>
-                  100% Safe Optimizations
+                <div style={{ fontSize: '2rem', marginBottom: 'var(--spacing-2)' }}>✓</div>
+                <h4 style={{ marginBottom: 'var(--spacing-2)', fontSize: '1.125rem', fontWeight: 700 }}>
+                  100% Safe
                 </h4>
-                <p style={{
-                  color: 'var(--text-secondary)',
-                  fontSize: '0.9375rem',
-                  lineHeight: 1.6,
-                  letterSpacing: '-0.011em'
-                }}>
-                  Only tested, manufacturer-approved settings. Your warranty stays intact.
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.9375rem' }}>
+                  Only tested, manufacturer-approved settings.
                 </p>
               </div>
 
               <div style={{ textAlign: 'center' }}>
-                <div style={{
-                  fontSize: '2.25rem',
-                  marginBottom: 'var(--spacing-3)',
-                  lineHeight: 1
-                }}>📊</div>
-                <h4 style={{
-                  marginBottom: 'var(--spacing-2)',
-                  fontSize: '1.125rem',
-                  fontWeight: 700,
-                  color: 'var(--text-primary)',
-                  letterSpacing: '-0.015em'
-                }}>
-                  Documented Results
+                <div style={{ fontSize: '2rem', marginBottom: 'var(--spacing-2)' }}>📊</div>
+                <h4 style={{ marginBottom: 'var(--spacing-2)', fontSize: '1.125rem', fontWeight: 700 }}>
+                  Documented
                 </h4>
-                <p style={{
-                  color: 'var(--text-secondary)',
-                  fontSize: '0.9375rem',
-                  lineHeight: 1.6,
-                  letterSpacing: '-0.011em'
-                }}>
-                  Full before/after benchmarks with every optimization session.
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.9375rem' }}>
+                  Full before/after benchmarks with every session.
                 </p>
               </div>
 
               <div style={{ textAlign: 'center' }}>
-                <div style={{
-                  fontSize: '2.25rem',
-                  marginBottom: 'var(--spacing-3)',
-                  lineHeight: 1
-                }}>💰</div>
-                <h4 style={{
-                  marginBottom: 'var(--spacing-2)',
-                  fontSize: '1.125rem',
-                  fontWeight: 700,
-                  color: 'var(--text-primary)',
-                  letterSpacing: '-0.015em'
-                }}>
-                  48-Hour Guarantee
+                <div style={{ fontSize: '2rem', marginBottom: 'var(--spacing-2)' }}>💰</div>
+                <h4 style={{ marginBottom: 'var(--spacing-2)', fontSize: '1.125rem', fontWeight: 700 }}>
+                  Guaranteed
                 </h4>
-                <p style={{
-                  color: 'var(--text-secondary)',
-                  fontSize: '0.9375rem',
-                  lineHeight: 1.6,
-                  letterSpacing: '-0.011em'
-                }}>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.9375rem' }}>
                   Full refund if we don't deliver measurable improvements.
                 </p>
               </div>
             </div>
-          </motion.div>
+          </div>
 
-          {/* Comparison Table - Apple-refined */}
+          {/* Comparison Table */}
           <motion.div 
             className="glass-card"
             initial={{ opacity: 0, y: 20 }}
@@ -248,7 +200,7 @@ export default function PackagesPage() {
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
             style={{
-              padding: 'var(--spacing-6) var(--spacing-5)',
+              padding: 'var(--spacing-6)',
               marginBottom: 'var(--spacing-8)'
             }}
           >
@@ -262,7 +214,7 @@ export default function PackagesPage() {
             <ComparisonTable />
           </motion.div>
 
-          {/* FAQ - Apple-refined */}
+          {/* FAQ */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -281,11 +233,20 @@ export default function PackagesPage() {
           </motion.div>
         </div>
       </section>
-    </main>
+    </>
   )
 }
 
-function ServicePackage({ name, price, color, glowClass, features, calendlyUrl, description, featured }: {
+function ServicePackage({ 
+  name, 
+  price, 
+  color, 
+  glowClass, 
+  features, 
+  calendlyUrl, 
+  description, 
+  featured 
+}: {
   name: string
   price: string
   color: string
@@ -299,18 +260,16 @@ function ServicePackage({ name, price, color, glowClass, features, calendlyUrl, 
     <motion.div
       variants={staggerItemVariants}
       className="package-card"
-      whileHover={{ y: -8, boxShadow: `0 20px 48px ${color}20` }}
+      whileHover={{ y: -8 }}
       style={{
         padding: 'var(--spacing-8) var(--spacing-6)',
         position: 'relative',
         background: featured ? 'rgba(255, 255, 255, 0.04)' : 'rgba(255, 255, 255, 0.02)',
-        border: featured ? `1px solid ${color}30` : '1px solid var(--border-default)',
-        borderRadius: 'var(--radius-2xl)',
+        border: featured ? `1px solid ${color}30` : '1px solid rgba(255, 255, 255, 0.08)',
+        borderRadius: 'var(--radius-lg)',
         transition: 'all 0.3s var(--ease-standard)',
-        backdropFilter: 'blur(24px) saturate(140%)',
-        WebkitBackdropFilter: 'blur(24px) saturate(140%)',
-        boxShadow: featured ? `0 12px 40px ${color}12` : 'none',
-        cursor: 'default'
+        backdropFilter: 'blur(24px)',
+        WebkitBackdropFilter: 'blur(24px)'
       }}
     >
       {featured && (
@@ -319,146 +278,82 @@ function ServicePackage({ name, price, color, glowClass, features, calendlyUrl, 
           top: '-12px',
           left: '50%',
           transform: 'translateX(-50%)',
-          background: `linear-gradient(135deg, ${color}, ${color}dd)`,
+          background: color,
           color: '#000',
-          padding: 'var(--spacing-1) var(--spacing-3)',
+          padding: '4px 12px',
           borderRadius: 'var(--radius-full)',
-          fontSize: '0.6875rem',
+          fontSize: '0.75rem',
           fontWeight: 700,
-          fontFamily: 'var(--font-display)',
-          textTransform: 'uppercase',
-          letterSpacing: '0.08em',
-          boxShadow: `0 4px 16px ${color}30`
+          textTransform: 'uppercase'
         }}>
           Most Popular
         </div>
       )}
 
-      {/* Package Name & Description */}
       <div style={{ marginBottom: 'var(--spacing-5)' }}>
         <h3 style={{
           fontSize: '1.75rem',
           marginBottom: 'var(--spacing-2)',
           fontWeight: 700,
-          letterSpacing: '-0.02em',
-          color: '#ffffff'
+          letterSpacing: '-0.02em'
         }}>
           {name}
         </h3>
         <p style={{
           fontSize: '0.9375rem',
           color: 'var(--text-secondary)',
-          lineHeight: 1.6,
-          marginBottom: 'var(--spacing-4)',
-          letterSpacing: '-0.011em'
+          marginBottom: 'var(--spacing-4)'
         }}>
           {description}
         </p>
-
-        {/* Pricing - Apple-refined precision */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'baseline',
-          gap: 'var(--spacing-1)',
-          marginBottom: 'var(--spacing-1)'
-        }}>
-          <span style={{
-            fontSize: '3.25rem',
-            fontWeight: 700,
-            fontFamily: 'var(--font-display)',
-            color: color,
-            letterSpacing: '-0.03em',
-            lineHeight: 1
-          }}>
-            {price}
+        <div style={{ marginBottom: 'var(--spacing-4)' }}>
+          <span style={{ fontSize: '3rem', fontWeight: 800, color: color }}>
+            AED {price}
           </span>
-          <span style={{
-            fontSize: '1.25rem',
-            color: 'var(--text-secondary)',
-            fontWeight: 600,
-            letterSpacing: '-0.011em'
-          }}>
-            AED
-          </span>
+          <p style={{ fontSize: '0.9375rem', color: 'var(--text-tertiary)' }}>
+            One-time optimization
+          </p>
         </div>
-        <p style={{
-          fontSize: '0.8125rem',
-          color: 'var(--text-tertiary)',
-          letterSpacing: '-0.008em'
-        }}>
-          One-time payment
-        </p>
       </div>
 
-      {/* Divider */}
-      <div style={{
-        height: '1px',
-        background: 'var(--border-default)',
-        marginBottom: 'var(--spacing-5)'
-      }} />
-
-      {/* Features List - Apple-refined spacing */}
-      <ul style={{
-        listStyle: 'none',
-        marginBottom: 'var(--spacing-6)',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 'var(--spacing-2)'
-      }}>
+      <ul style={{ marginBottom: 'var(--spacing-6)', listStyle: 'none', padding: 0 }}>
         {features.map((feature, i) => (
           <li key={i} style={{
-            display: 'flex',
-            alignItems: 'flex-start',
-            gap: 'var(--spacing-2)',
+            padding: 'var(--spacing-2) 0',
+            borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
             fontSize: '0.9375rem',
-            color: 'var(--text-secondary)',
-            lineHeight: 1.5,
-            letterSpacing: '-0.011em'
+            color: 'var(--text-secondary)'
           }}>
-            <span style={{
-              color: color,
-              fontSize: '1rem',
-              lineHeight: 1,
-              marginTop: '2px',
-              fontWeight: 700
-            }}>✓</span>
-            <span>{feature}</span>
+            ✓ {feature}
           </li>
         ))}
       </ul>
 
-      {/* CTA Button - Apple-refined interaction */}
       <a
         href={calendlyUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="package-btn"
         style={{
+          display: 'block',
           width: '100%',
-          background: featured ? color : 'rgba(255, 255, 255, 0.06)',
-          color: featured ? '#000' : '#ffffff',
-          border: featured ? 'none' : '1px solid var(--border-default)',
-          fontWeight: 700,
-          textAlign: 'center',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: 'var(--spacing-3) var(--spacing-5)',
+          padding: 'var(--spacing-3)',
+          background: `linear-gradient(135deg, ${color}, ${color}dd)`,
+          color: '#000',
+          border: 'none',
           borderRadius: 'var(--radius-md)',
+          fontWeight: 700,
           fontSize: '1rem',
-          fontFamily: 'var(--font-display)',
-          letterSpacing: '-0.011em',
-          transition: 'all 0.25s var(--ease-standard)',
           cursor: 'pointer',
-          textDecoration: 'none',
-          boxShadow: featured ? `0 4px 16px ${color}25` : 'none',
-          backdropFilter: featured ? 'none' : 'blur(12px)',
-          WebkitBackdropFilter: featured ? 'none' : 'blur(12px)'
+          transition: 'all 0.2s var(--ease-standard)',
+          textAlign: 'center',
+          textDecoration: 'none'
         }}
+        onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(0.98)'}
+        onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
       >
-        Get Started
+        Schedule Now
       </a>
-    </div>
+    </motion.div>
   )
 }
 
@@ -467,10 +362,9 @@ function ComparisonTable() {
     { name: 'Session Duration', quick: '1 hour', full: '2-3 hours', extreme: '4-6 hours' },
     { name: 'Windows Optimization', quick: '✓', full: '✓', extreme: '✓' },
     { name: 'GPU Drivers', quick: '✓', full: '✓', extreme: '✓' },
-    { name: 'BIOS Optimization', quick: '—', full: 'Guided', extreme: 'Deep-dive' },
+    { name: 'BIOS Optimization', quick: '—', full: 'Guided', extreme: 'Deep' },
     { name: 'RAM Tuning', quick: '—', full: 'Basic', extreme: 'Advanced' },
     { name: 'Network Config', quick: 'Basic', full: 'Advanced', extreme: 'Expert' },
-    { name: 'Follow-up Support', quick: '—', full: '1 week', extreme: '1 month' },
   ]
 
   return (
@@ -481,16 +375,16 @@ function ComparisonTable() {
         fontSize: '0.9375rem'
       }}>
         <thead>
-          <tr style={{ borderBottom: '1px solid var(--border-default)' }}>
+          <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
             <th style={{ padding: '16px', textAlign: 'left', color: 'var(--text-secondary)' }}>Feature</th>
             <th style={{ padding: '16px', textAlign: 'center', color: 'var(--quick-fix)' }}>Quick Fix</th>
-            <th style={{ padding: '16px', textAlign: 'center', color: 'var(--full-tune)' }}>Full Tune-Up</th>
+            <th style={{ padding: '16px', textAlign: 'center', color: 'var(--full-tune)' }}>Full Tune</th>
             <th style={{ padding: '16px', textAlign: 'center', color: 'var(--extreme)' }}>Extreme</th>
           </tr>
         </thead>
         <tbody>
           {features.map((feature, i) => (
-            <tr key={i} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+            <tr key={i} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)' }}>
               <td style={{ padding: '16px', color: 'var(--text-primary)' }}>{feature.name}</td>
               <td style={{ padding: '16px', textAlign: 'center', color: 'var(--text-secondary)' }}>{feature.quick}</td>
               <td style={{ padding: '16px', textAlign: 'center', color: 'var(--text-secondary)' }}>{feature.full}</td>
@@ -507,27 +401,27 @@ function FAQ() {
   const faqs = [
     {
       q: 'Is this safe for my hardware?',
-      a: 'Absolutely. We only apply safe, tested optimizations that are within manufacturer specifications. No extreme overclocking that risks hardware stability or lifespan. Your system warranty remains intact.'
+      a: 'Absolutely. We only apply safe, tested optimizations. Your system warranty remains intact.'
     },
     {
-      q: 'How long do the improvements last?',
-      a: 'Optimizations are permanent until you update drivers, BIOS, or change hardware. We provide detailed documentation of every change made, so you can reference it for any future modifications.'
+      q: 'How long do improvements last?',
+      a: 'Permanent until driver/BIOS updates. We provide full documentation of every change.'
     },
     {
       q: 'What hardware do you support?',
-      a: 'We primarily optimize AMD Ryzen systems (especially X3D chips) and NVIDIA GPUs, which make up the majority of competitive CS2 setups. Contact us for Intel or AMD GPU configurations.'
+      a: 'AMD Ryzen systems (especially X3D) and NVIDIA GPUs. Contact us for Intel configurations.'
     },
     {
       q: 'What if I don\'t see improvements?',
-      a: 'If we can\'t deliver measurable performance improvements with documented before/after benchmarks, we offer a full refund within 48 hours. Your satisfaction is guaranteed.'
+      a: '48-hour money-back guarantee if we don\'t deliver measurable before/after improvements.'
     },
     {
       q: 'How does remote optimization work?',
-      a: 'We use secure remote desktop software (AnyDesk or TeamViewer) with your permission. You can watch every change we make in real-time, and we explain each optimization step by step.'
+      a: 'We use secure remote desktop (AnyDesk/TeamViewer) with your permission. Watch every change.'
     },
     {
-      q: 'Do you offer ongoing support?',
-      a: 'Yes. All packages include follow-up support (duration varies by package). We\'re available via WhatsApp and Discord for quick questions and troubleshooting.'
+      q: 'Do you offer follow-up support?',
+      a: 'Yes. All packages include follow-up support via WhatsApp and Discord.'
     }
   ]
 
@@ -547,7 +441,7 @@ function FAQ() {
         <motion.div 
           key={i} 
           variants={staggerItemVariants}
-          whileHover={{ y: -2, borderColor: 'rgba(232, 153, 0, 0.2)', background: 'rgba(255, 255, 255, 0.04)' }}
+          whileHover={{ y: -2 }}
           style={{
             background: 'rgba(255, 255, 255, 0.02)',
             border: '1px solid rgba(255, 255, 255, 0.08)',

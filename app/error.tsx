@@ -8,7 +8,7 @@ export default function Error({
   reset: () => void
 }) {
   return (
-    <main>
+    <>
       <section className="section" style={{
         display: 'flex',
         alignItems: 'center',
@@ -122,6 +122,6 @@ export default function Error({
           </div>
         </div>
       </section>
-    </main>
+    </>
   )
 }

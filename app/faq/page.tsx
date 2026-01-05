@@ -152,7 +152,7 @@ export default function FAQPage() {
     : faqs.filter(faq => faq.category === selectedCategory)
 
   return (
-    <main>
+    <>
       <section className="section" style={{
         paddingTop: 'calc(64px + var(--spacing-10))',
         paddingBottom: 'var(--spacing-12)'
@@ -330,7 +330,7 @@ export default function FAQPage() {
           </motion.div>
         </div>
       </section>
-    </main>
+    </>
   )
 }
 

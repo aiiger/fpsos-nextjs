@@ -110,7 +110,7 @@ export default function ContactPage() {
   ]
 
   return (
-    <main>
+    <>
       <section className="section" style={{
         paddingTop: 'calc(64px + var(--spacing-10))',
         paddingBottom: 'var(--spacing-12)',
@@ -725,6 +725,6 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
-    </main>
+    </>
   )
 }

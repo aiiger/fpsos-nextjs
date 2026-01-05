@@ -2,7 +2,7 @@
 
 export default function NotFound() {
   return (
-    <main>
+    <>
       <section className="section" style={{
         display: 'flex',
         alignItems: 'center',
@@ -98,6 +98,6 @@ export default function NotFound() {
           </div>
         </div>
       </section>
-    </main>
+    </>
   )
 }

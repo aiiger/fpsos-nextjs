@@ -100,24 +100,23 @@ export default function Home() {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
         style={{
-          minHeight: '100vh',
+          minHeight: '90vh',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          paddingTop: 'var(--spacing-8)',
-          paddingBottom: 'var(--spacing-12)',
+          padding: 'var(--spacing-8) 0',
           background: 'linear-gradient(180deg, rgba(104, 0, 54, 0.05) 0%, transparent 100%)'
         }}
       >
-        <div className="container">
+        <div className="container" style={{ maxWidth: '1400px' }}>
           {/* Before/After Hero */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: '1fr auto 1fr',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
             alignItems: 'center',
-            gap: 'var(--spacing-8)',
-            maxWidth: '1400px',
-            margin: '0 auto'
+            justifyItems: 'center',
+            gap: 'var(--spacing-6)',
+            marginBottom: 'var(--spacing-8)'
           }}>
             {/* Before - Stressed */}
             <motion.div
@@ -125,24 +124,26 @@ export default function Home() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
               style={{
-                textAlign: 'center'
+                textAlign: 'center',
+                order: 1
               }}
             >
               <div style={{
-                fontSize: '8rem',
-                marginBottom: 'var(--spacing-4)',
-                opacity: 0.6,
+                fontSize: 'clamp(4rem, 10vw, 6rem)',
+                marginBottom: 'var(--spacing-3)',
+                opacity: 0.5,
                 filter: 'grayscale(1)'
               }}>
                 😫
               </div>
               <p style={{
-                fontSize: '1.125rem',
-                color: 'var(--text-secondary)',
+                fontSize: 'clamp(0.875rem, 1.5vw, 1rem)',
+                color: 'var(--text-tertiary)',
                 fontWeight: 600,
-                letterSpacing: '-0.011em'
+                letterSpacing: '-0.011em',
+                lineHeight: 1.5
               }}>
-                Low FPS<br />High Latency<br />Inconsistent Frame Times
+                Low FPS<br />High Latency<br />Inconsistent Frames
               </p>
             </motion.div>
 
@@ -153,19 +154,20 @@ export default function Home() {
               transition={{ duration: 0.8, delay: 0.2 }}
               style={{
                 textAlign: 'center',
-                whiteSpace: 'nowrap'
+                order: 2,
+                gridColumn: '1 / -1'
               }}
             >
               <h1 style={{
-                fontSize: 'clamp(5rem, 15vw, 12rem)',
+                fontSize: 'clamp(4rem, 12vw, 10rem)',
                 fontWeight: 900,
                 background: 'linear-gradient(135deg, var(--fpsos-purple) 0%, var(--fpsos-orange) 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
                 letterSpacing: '-0.03em',
-                lineHeight: 1,
-                marginBottom: 'var(--spacing-6)'
+                lineHeight: 0.95,
+                marginBottom: 'var(--spacing-4)'
               }}>
                 FPSOS
               </h1>
@@ -175,7 +177,7 @@ export default function Home() {
                 background: 'rgba(232, 153, 0, 0.1)',
                 border: '1px solid rgba(232, 153, 0, 0.3)',
                 borderRadius: 'var(--radius-full)',
-                fontSize: '0.875rem',
+                fontSize: 'clamp(0.75rem, 1.5vw, 0.875rem)',
                 color: 'var(--fpsos-orange)',
                 fontWeight: 700,
                 letterSpacing: '-0.008em'
@@ -190,23 +192,25 @@ export default function Home() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
               style={{
-                textAlign: 'center'
+                textAlign: 'center',
+                order: 3
               }}
             >
               <div style={{
-                fontSize: '8rem',
-                marginBottom: 'var(--spacing-4)',
-                filter: 'saturate(1.2)'
+                fontSize: 'clamp(4rem, 10vw, 6rem)',
+                marginBottom: 'var(--spacing-3)',
+                filter: 'saturate(1.3)'
               }}>
                 😎
               </div>
               <p style={{
-                fontSize: '1.125rem',
+                fontSize: 'clamp(0.875rem, 1.5vw, 1rem)',
                 color: 'var(--fpsos-orange)',
                 fontWeight: 600,
-                letterSpacing: '-0.011em'
+                letterSpacing: '-0.011em',
+                lineHeight: 1.5
               }}>
-                360+ FPS<br />Lower Latency<br />Stable Frame Times
+                360+ FPS<br />Lower Latency<br />Stable Frames
               </p>
             </motion.div>
           </div>
@@ -218,12 +222,12 @@ export default function Home() {
             transition={{ duration: 0.6, delay: 0.4 }}
             style={{
               textAlign: 'center',
-              fontSize: 'clamp(1.125rem, 2vw, 1.5rem)',
+              fontSize: 'clamp(1rem, 2vw, 1.25rem)',
               color: 'var(--text-secondary)',
               lineHeight: 1.6,
               letterSpacing: '-0.011em',
-              maxWidth: '800px',
-              margin: 'var(--spacing-12) auto 0',
+              maxWidth: '700px',
+              margin: '0 auto',
               fontWeight: 400
             }}
           >

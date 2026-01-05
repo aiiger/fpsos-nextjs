@@ -201,39 +201,6 @@ export default function Home() {
         }}
       />
 
-      {/* Top Navigation Bar */}
-      <motion.nav
-        initial={{ y: -100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8, delay: 0.2, type: "spring", stiffness: 100 }}
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 1000,
-          padding: '24px 48px',
-          background: 'rgba(0, 0, 0, 0.4)',
-          backdropFilter: 'blur(30px) saturate(150%)',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-          boxShadow: '0 4px 30px rgba(0, 0, 0, 0.3)',
-          display: 'flex',
-          justifyContent: 'flex-end',
-          alignItems: 'center'
-        }}
-      >
-        <div style={{
-          display: 'flex',
-          gap: '28px',
-          alignItems: 'center'
-        }}>
-          <SocialIconEnhanced href="https://discord.gg/K3A6MkNXT9" icon="💬" delay={0.3} color="#5865F2" />
-          <SocialIconEnhanced href="https://wa.link/jtku16" icon="📱" delay={0.4} color="#25D366" />
-          <SocialIconEnhanced href="https://calendly.com/fpsoptimizationstation" icon="📅" delay={0.5} color="#006BFF" />
-          <SocialIconEnhanced href="https://instagram.com/fpsoptimizationstation" icon="📷" delay={0.6} color="#E4405F" />
-        </div>
-      </motion.nav>
-
       {/* Hero Content */}
       <div style={{
         position: 'relative',
@@ -296,32 +263,6 @@ export default function Home() {
         </AnimatePresence>
       </div>
 
-      {/* Bottom Social Bar */}
-      <motion.div
-        initial={{ y: 100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8, delay: 1, type: "spring", stiffness: 100 }}
-        style={{
-          position: 'fixed',
-          bottom: '24px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          zIndex: 1000,
-          padding: '16px 32px',
-          background: 'rgba(0, 0, 0, 0.4)',
-          backdropFilter: 'blur(30px) saturate(150%)',
-          borderRadius: '100px',
-          border: '1px solid rgba(255, 255, 255, 0.15)',
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
-          display: 'flex',
-          gap: '24px',
-          alignItems: 'center'
-        }}
-      >
-        <SocialIconEnhanced href="https://discord.gg/K3A6MkNXT9" icon="💬" delay={0} color="#5865F2" />
-        <SocialIconEnhanced href="https://wa.link/jtku16" icon="📱" delay={0.1} color="#25D366" />
-        <SocialIconEnhanced href="https://instagram.com/fpsoptimizationstation" icon="📷" delay={0.2} color="#E4405F" />
-      </motion.div>
     </div>
   )
 }

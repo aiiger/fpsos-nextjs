@@ -1,172 +1,108 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import Image from 'next/image'
+import Link from 'next/link'
+import type { CSSProperties } from 'react'
 
-type Package = {
-  title: string
-  price: string
-  color: string
-  features: string[]
-  bookingUrl: string
-}
-
-const packages: Package[] = [
+const bookingHotspots: Array<{
+  href: string
+  ariaLabel: string
+  style: CSSProperties
+}> = [
   {
-    title: 'Quick Remote Fix',
-    price: 'AED 199',
-    color: '#00CCBC',
-    features: [
-      'No Optimization, Just Solutions',
-      'Ideal if your PC is crashing, freezing or shutting down',
-      'Fast help, no fluff',
-      '1 Support Session (Valid 30 Days)',
-      'Average Completion: ~1 Hour'
-    ],
-    bookingUrl: 'https://calendly.com/fpsoptimizationstation/quickremotefix'
+    href: 'https://calendly.com/fpsoptimizationstation/quickremotefix',
+    ariaLabel: 'Book Quick Remote Fix',
+    style: { top: '16%', left: '62%', width: '31%', height: '14%' }
   },
   {
-    title: 'Full System Tune-Up',
-    price: 'AED 399',
-    color: '#FF5A00',
-    features: [
-      'Subtick-Optimized Settings',
-      'GPU driver optimization',
-      'Windows power/latency tuning',
-      'Network jitter reduction',
-      '2 Support Sessions (Valid 30 Days)',
-      'Average Completion: ~2-3 Hours'
-    ],
-    bookingUrl: 'https://calendly.com/fpsoptimizationstation/fullsystemtuneup'
+    href: 'https://calendly.com/fpsoptimizationstation/fullsystemtuneup',
+    ariaLabel: 'Book Full System Tune-Up',
+    style: { top: '40%', left: '62%', width: '31%', height: '14%' }
   },
   {
-    title: 'Extreme BIOSPRIME',
-    price: 'AED 699',
-    color: '#FEEE00',
-    features: [
-      'Advanced BIOS/UEFI Configuration',
-      'Memory timing optimization',
-      'CPU power delivery tuning',
-      'Everything from Full Tune-Up',
-      '3 Support Sessions (Valid 30 Days)',
-      'Average Completion: ~4-5 Hours'
-    ],
-    bookingUrl: 'https://calendly.com/fpsoptimizationstation/extremebiosprime'
+    href: 'https://calendly.com/fpsoptimizationstation/extremebiosprime',
+    ariaLabel: 'Book Extreme BIOSPRIME',
+    style: { top: '64%', left: '62%', width: '31%', height: '14%' }
   }
 ]
 
-export default function PackagesPage() {
-  return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: 'calc(var(--spacing-10) + 40px) var(--spacing-4) var(--spacing-12)',
-      background: 'radial-gradient(circle at top, rgba(232, 153, 0, 0.18), transparent 45%), linear-gradient(160deg, #040404 0%, #07000f 50%, #040404 100%)'
-    }}>
-      <div style={{
-        maxWidth: '1200px',
-        width: '100%',
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-        gap: 'var(--spacing-4)'
-      }}>
-        {packages.map((pkg) => (
-          <PackageCard key={pkg.title} {...pkg} />
-        ))}
-      </div>
-    </div>
-  )
+const iconHotspots: Array<{
+  href: string
+  ariaLabel: string
+  style: CSSProperties
+}> = [
+  {
+    href: 'https://discord.gg/K3A6MkNXT9',
+    ariaLabel: 'Open Discord',
+    style: { top: '82.5%', left: '59%', width: '6%', height: '8%' }
+  },
+  {
+    href: 'https://wa.link/jtku16',
+    ariaLabel: 'Open WhatsApp',
+    style: { top: '82.5%', left: '67%', width: '6%', height: '8%' }
+  },
+  {
+    href: 'https://instagram.com/fpsoptimizationstation',
+    ariaLabel: 'Open Instagram',
+    style: { top: '82.5%', left: '75%', width: '6%', height: '8%' }
+  }
+]
+
+const packagesButtonStyle: CSSProperties = {
+  top: '79%',
+  left: '34%',
+  width: '18%',
+  height: '10%'
 }
 
-function PackageCard({ title, price, features, bookingUrl, color }: Package) {
+export default function PackagesPage() {
   return (
-    <motion.div
-      whileHover={{ y: -8, scale: 1.01 }}
-      transition={{ duration: 0.25, ease: 'easeOut' }}
-      style={{
-        background: '#090909',
-        border: `2px solid ${color}`,
-        borderRadius: 'var(--radius-xl)',
-        padding: 'var(--spacing-5)',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 'var(--spacing-4)',
-        position: 'relative',
-        overflow: 'hidden',
-        transition: 'all 0.25s var(--ease-standard)',
-        boxShadow: `0 30px 60px ${color}15`,
-        backgroundImage: `linear-gradient(160deg, ${color}15 0%, rgba(0,0,0,0) 55%)`
-      }}
-    >
-      <div>
-        <h3 style={{
-          fontSize: '1.5rem',
-          fontWeight: 800,
-          marginBottom: 'var(--spacing-2)',
-          fontFamily: 'var(--font-display)',
-          color: '#ffffff'
-        }}>
-          {title}
-        </h3>
-        <div style={{
-          fontSize: '2.5rem',
-          fontWeight: 900,
-          color,
-          fontFamily: 'var(--font-display)',
-          letterSpacing: '-0.02em'
-        }}>
-          {price}
+    <main className="pixelPage">
+      <div className="pixelCanvas">
+        <Image
+          src="/canva/packages.png"
+          alt="FPSOS Canva packages page mockup"
+          width={1920}
+          height={1080}
+          priority
+          className="pixelImage"
+        />
+
+        <div className="pixelHotspots" aria-label="Clickable areas">
+          <Link href="/" className="pixelHotspot" aria-label="Return to home" style={packagesButtonStyle}>
+            <span className="srOnly">Return to home</span>
+          </Link>
+
+          {bookingHotspots.map((hotspot) => (
+            <a
+              key={hotspot.ariaLabel}
+              href={hotspot.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="pixelHotspot"
+              aria-label={hotspot.ariaLabel}
+              style={hotspot.style}
+            >
+              <span className="srOnly">{hotspot.ariaLabel}</span>
+            </a>
+          ))}
+
+          {iconHotspots.map((hotspot) => (
+            <a
+              key={hotspot.ariaLabel}
+              href={hotspot.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="pixelHotspot"
+              aria-label={hotspot.ariaLabel}
+              style={hotspot.style}
+            >
+              <span className="srOnly">{hotspot.ariaLabel}</span>
+            </a>
+          ))}
         </div>
       </div>
-
-      <ul style={{
-        listStyle: 'none',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 'var(--spacing-2)',
-        flex: 1,
-        margin: 0,
-        padding: 0
-      }}>
-        {features.map((feature, i) => (
-          <li key={i} style={{
-            display: 'flex',
-            alignItems: 'flex-start',
-            gap: 'var(--spacing-2)',
-            fontSize: '0.9375rem',
-            color: '#f3f3f3',
-            lineHeight: 1.5
-          }}>
-            <span style={{ color, fontSize: '1.25rem', lineHeight: 1 }}>✓</span>
-            <span>{feature}</span>
-          </li>
-        ))}
-      </ul>
-
-      <a
-        href={bookingUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{
-          display: 'block',
-          textAlign: 'center',
-          padding: 'var(--spacing-3)',
-          background: color,
-          color: '#000',
-          fontWeight: 800,
-          fontSize: '1rem',
-          borderRadius: 'var(--radius-md)',
-          textDecoration: 'none',
-          transition: 'all 0.25s var(--ease-standard)',
-          textTransform: 'uppercase',
-          letterSpacing: '0.05em',
-          boxShadow: `0 12px 40px ${color}40`
-        }}
-      >
-        Book Now
-      </a>
-    </motion.div>
+    </main>
   )
 }
 

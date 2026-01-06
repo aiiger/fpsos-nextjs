@@ -647,3 +647,302 @@ a:focus-visible {
     animation: none;
   }
 }
+
+/* Layout + FX */
+.pageRoot {
+  position: relative;
+  min-height: 100vh;
+  background: var(--gradient-main);
+  overflow: hidden;
+  color: var(--text-primary);
+}
+
+.bgLayer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.05), transparent 35%),
+    radial-gradient(circle at 80% 10%, rgba(232, 153, 0, 0.15), transparent 40%),
+    linear-gradient(120deg, rgba(10, 10, 30, 0.8), rgba(5, 5, 8, 0.95));
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.7;
+  animation: orb-float 20s ease-in-out infinite;
+}
+
+.layer-one {
+  width: 520px;
+  height: 520px;
+  top: -120px;
+  right: -80px;
+  background: radial-gradient(circle, rgba(0, 204, 188, 0.5) 0%, transparent 65%);
+}
+
+.layer-two {
+  width: 540px;
+  height: 540px;
+  bottom: -140px;
+  left: -100px;
+  background: radial-gradient(circle, rgba(255, 90, 0, 0.45) 0%, transparent 70%);
+  animation-delay: 4s;
+}
+
+.layer-three {
+  width: 600px;
+  height: 600px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(104, 0, 54, 0.4) 0%, transparent 70%);
+  animation-delay: 8s;
+}
+
+.vignette {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle, transparent 30%, rgba(0, 0, 0, 0.55) 80%);
+  z-index: 1;
+}
+
+.noise {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(0deg, transparent 0 2px, rgba(255, 255, 255, 0.02) 2px 4px);
+  opacity: 0.25;
+  mix-blend-mode: screen;
+  z-index: 2;
+}
+
+.gridOverlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mix-blend-mode: screen;
+  opacity: 0.4;
+  z-index: 1;
+}
+
+.siteHeader {
+  position: fixed;
+  left: var(--spacing-4);
+  right: var(--spacing-4);
+  top: var(--spacing-3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-2) var(--spacing-3);
+  border-radius: var(--radius-xl);
+  background: rgba(5, 5, 5, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(24px);
+  z-index: 10;
+}
+
+.siteHeader nav {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+}
+
+.navLink {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--text-primary);
+  padding: var(--spacing-1) var(--spacing-2);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  transition: all 0.2s var(--ease-standard);
+}
+
+.navLink:hover,
+.navLink:focus-visible {
+  border-color: rgba(255, 255, 255, 0.26);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.headerIcons {
+  display: flex;
+  gap: var(--spacing-2);
+}
+
+.iconLink {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  text-decoration: none;
+  transition: all 0.2s var(--ease-standard);
+}
+
+.iconLink:hover,
+.iconLink:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255, 255, 255, 0.24);
+  border-color: rgba(232, 153, 0, 0.25);
+}
+
+.heroWrap {
+  position: relative;
+  z-index: 5;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-20) var(--spacing-4) var(--spacing-12);
+}
+
+.heroPanel {
+  background: rgba(10, 10, 15, 0.9);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 40px 120px rgba(0, 0, 0, 0.65);
+}
+
+.heroImg {
+  width: min(100%, 1400px);
+  border-radius: var(--radius-xl);
+  filter: drop-shadow(0 30px 100px rgba(0, 0, 0, 0.65));
+}
+
+.heroGlow {
+  position: fixed;
+  width: 700px;
+  height: 700px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(232, 153, 0, 0.45) 0%, transparent 70%);
+  filter: blur(56px);
+  transform: translate(-50%, -50%);
+  opacity: 0.6;
+  mix-blend-mode: screen;
+  z-index: 3;
+  transition: transform 0.25s ease;
+}
+
+.particleLayer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  opacity: 0;
+  animation: pulse-glow 6s ease-in-out infinite;
+}
+
+.particle-1 {
+  background: rgba(0, 204, 188, 0.8);
+  top: 20%;
+  left: 25%;
+}
+
+.particle-2 {
+  background: rgba(255, 255, 255, 0.8);
+  top: 40%;
+  right: 20%;
+  animation-delay: 0.5s;
+}
+
+.particle-3 {
+  background: rgba(255, 90, 0, 0.85);
+  bottom: 15%;
+  right: 35%;
+  animation-delay: 1.1s;
+}
+
+
+/* --- Pixel-perfect Canva pages (temporary) --- */
+.pixelPage {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: #05060a;
+}
+
+.pixelCanvas {
+  position: relative;
+  width: min(1400px, 96vw);
+  border-radius: 26px;
+  overflow: hidden;
+  box-shadow:
+    0 18px 60px rgba(0, 0, 0, 0.55),
+    0 2px 0 rgba(255, 255, 255, 0.05) inset;
+}
+
+.pixelImage {
+  width: 100%;
+  height: auto;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.pixelHotspots {
+  position: absolute;
+  inset: 0;
+}
+
+.pixelHotspot {
+  position: absolute;
+  border-radius: 10px;
+  outline: none;
+  background: transparent;
+}
+
+.pixelCanvas.debugHotspots .pixelHotspot {
+  background: rgba(0, 255, 255, 0.18);
+  box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.35) inset;
+}
+
+.pixelHotspot:focus-visible {
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.85),
+    0 0 0 6px rgba(120, 80, 255, 0.55);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 768px) {
+  .pixelPage {
+    padding: var(--spacing-6) var(--spacing-2);
+  }
+}

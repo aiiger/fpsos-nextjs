@@ -1,0 +1,110 @@
+; ------------------------------------------------
+; Copyright (c) 2024 BENQ Corporation
+; Issue date -- 04/04/2024
+; revision 1
+; This is a setupfile for XL2566X+
+; ------------------------------------------------
+;
+
+[Version]
+signature="$CHICAGO$"
+Class=Monitor
+ClassGuid={4D36E96E-E325-11CE-BFC1-08002BE10318}
+Provider=%BenQ%
+CatalogFile=XL2566X+.cat
+DriverVer=04/04/2024,1.0.0.0
+
+[SourceDisksNames]
+1=%DiskName%,,,
+
+[SourceDisksFiles]
+XL2566X+.icm=1
+
+[DestinationDirs]
+DefaultDestDir  = 12
+XL2566X+_HDMI.copyfiles = 23
+XL2566X+_DP.copyfiles = 23
+
+[ControlFlags]
+ExcludeFromSelect.NT=Monitor\BNQ7FE8
+ExcludeFromSelect.NT=Monitor\BNQ7FE7
+
+[Manufacturer]
+%BenQ%=BenQ,NTx86,NTAMD64
+
+[BenQ]
+%XL2566X+_HDMI%=XL2566X+_HDMI.Install, Monitor\BNQ7FE8
+%XL2566X+_DP%=XL2566X+_DP.Install, Monitor\BNQ7FE7
+
+[BenQ.NTx86]
+%XL2566X+_HDMI%=XL2566X+_HDMI.Install, Monitor\BNQ7FE8
+%XL2566X+_DP%=XL2566X+_DP.Install, Monitor\BNQ7FE7
+
+[BenQ.NTAMD64]
+%XL2566X+_HDMI%=XL2566X+_HDMI.Install, Monitor\BNQ7FE8
+%XL2566X+_DP%=XL2566X+_DP.Install, Monitor\BNQ7FE7
+
+
+[Monitor_Service.Install]
+ServiceType=1
+StartType=3
+ErrorControl=1
+ServiceBinary=%12%\monitor.sys
+
+
+[XL2566X+_HDMI.Install]
+DelReg=DEL_CURRENT_REG
+AddReg=XL2566X+_HDMI.AddReg, 1920, DPMS
+CopyFiles=XL2566X+_HDMI.CopyFiles
+
+
+[XL2566X+_DP.Install]
+DelReg=DEL_CURRENT_REG
+AddReg=XL2566X+_DP.AddReg, 1920, DPMS
+CopyFiles=XL2566X+_DP.CopyFiles
+
+
+[XL2566X+_HDMI.Install.Services]
+AddService=monitor, %SPSVCINST_ASSOCSERVICE%, Monitor_Service.Install
+
+
+[XL2566X+_DP.Install.Services]
+AddService=monitor, %SPSVCINST_ASSOCSERVICE%, Monitor_Service.Install
+
+
+[DEL_CURRENT_REG]
+HKR,MODES
+HKR,,MaxResolution
+HKR,,DPMS
+HKR,,ICMProfile
+
+[1920]
+HKR,,MaxResolution,,"1920,1080"
+
+[DPMS]
+HKR,,DPMS,,1
+
+[XL2566X+_HDMI.AddReg]
+HKR,"MODES\1920,1080",Mode1,,"30.0-255.0,24.0-240.0,+,-"
+HKR,,ICMProfile,0,"XL2566X+.icm"
+
+[XL2566X+_DP.AddReg]
+HKR,"MODES\1920,1080",Mode1,,"255.0-255.0,24.0-400.0,+,-"
+HKR,,ICMProfile,0,"XL2566X+.icm"
+
+
+[XL2566X+_HDMI.CopyFiles]
+XL2566X+.icm
+
+[XL2566X+_DP.CopyFiles]
+XL2566X+.icm
+
+
+[Strings]
+SPSVCINST_ASSOCSERVICE = 0x00000002
+
+BenQ="BenQ"
+DiskName="BenQ Monitor installation disk"
+XL2566X+_HDMI="XL2566X+ (HDMI)"
+XL2566X+_DP="XL2566X+ (DisplayPort)"
+

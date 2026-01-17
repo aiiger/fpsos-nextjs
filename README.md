@@ -1,4 +1,4 @@
-# FPsOS Website - Next.js + Bloomberg Theme
+# FPSOS Website - Next.js + Bloomberg Theme
 
 Professional CS2 optimization services website built with Next.js 14, featuring the Bloomberg void black theme with glassmorphism and animated gradient orbs.
 
@@ -229,4 +229,4 @@ Add `robots.txt` and `sitemap.xml` in `public/` folder for better SEO.
 
 ## 📄 License
 
-© 2025 FPsOS. All rights reserved.
+© 2025 FPSOS. All rights reserved.

@@ -1,0 +1,80 @@
+{
+  "commands": [],
+  "views": [
+    {
+      "name": "PreBookingView",
+      "line": 113,
+      "methods": [
+        {
+          "name": "__init__",
+          "line": 114
+        }
+      ]
+    },
+    {
+      "name": "WelcomeView",
+      "line": 130,
+      "methods": [
+        {
+          "name": "__init__",
+          "line": 131
+        }
+      ]
+    },
+    {
+      "name": "DiagnosticView",
+      "line": 152,
+      "methods": [
+        {
+          "name": "__init__",
+          "line": 153
+        }
+      ]
+    },
+    {
+      "name": "BookingView",
+      "line": 176,
+      "methods": [
+        {
+          "name": "__init__",
+          "line": 177
+        }
+      ]
+    }
+  ],
+  "modals": [
+    {
+      "name": "QuickAssessmentModal",
+      "line": 166,
+      "methods": []
+    }
+  ],
+  "event_handlers": [],
+  "helper_functions": [
+    {
+      "name": "get_welcome_embed",
+      "line": 188,
+      "decorator": []
+    },
+    {
+      "name": "get_packages_embed",
+      "line": 192,
+      "decorator": []
+    }
+  ],
+  "constants": [
+    {
+      "name": "Colors",
+      "line": 26,
+      "methods": []
+    }
+  ],
+  "statistics": {
+    "total_lines": 215,
+    "total_commands": 0,
+    "total_views": 4,
+    "total_modals": 1,
+    "total_event_handlers": 0,
+    "total_helper_functions": 2
+  }
+}

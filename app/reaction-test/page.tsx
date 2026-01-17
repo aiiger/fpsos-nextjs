@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { Zap, Trophy, Crown, RotateCcw } from 'lucide-react'
+import { motion } from 'framer-motion'
 import confetti from 'canvas-confetti'
 import { Toaster, toast } from 'sonner'
 
@@ -251,20 +252,33 @@ export default function ReactionTestPage() {
     switch (gameState) {
       case 'idle':
         return (
-          <div className="text-center relative z-20">
-            <Zap className="w-24 h-24 mx-auto mb-6 text-cyan-400 animate-pulse" />
-            <h1 className="text-5xl md:text-7xl font-black font-rajdhani text-white mb-6 tracking-wider">
-              REACTION <span className="text-cyan-500">TEST</span>
+          <div className="relative z-20 flex flex-col items-center">
+            {/* Reward Banner */}
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-8 px-6 py-2 rounded-full bg-yellow-500/10 border border-yellow-500/20 backdrop-blur-md flex items-center gap-3 shadow-[0_0_30px_rgba(234,179,8,0.1)]"
+            >
+              <Trophy className="w-5 h-5 text-yellow-500 animate-pulse" />
+              <span className="text-yellow-200 font-bold tracking-wider text-sm">
+                CURRENT CHAMPION WINS A <span className="text-yellow-400">FREE PC OPTIMIZATION</span>
+              </span>
+            </motion.div>
+
+            <Zap className="w-24 h-24 mx-auto mb-6 text-cyan-400 animate-pulse drop-shadow-[0_0_15px_rgba(34,211,238,0.5)]" />
+            <h1 className="text-5xl md:text-7xl font-black font-rajdhani text-white mb-6 tracking-wider drop-shadow-2xl">
+              REACTION <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">TEST</span>
             </h1>
-            <p className="text-xl text-gray-400 mb-12 max-w-md mx-auto">
-              Test your visual reflex speed. Click immediately when the screen turns green.
+            <p className="text-xl text-gray-400 mb-12 max-w-md mx-auto leading-relaxed">
+              Test your visual reflex speed. <br /> Click immediately when the screen turns <span className="text-green-400 font-bold">GREEN</span>.
             </p>
+
             <button
               onClick={handleStart}
-              className="group relative px-12 py-5 bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xl rounded-full transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(34,211,238,0.4)]"
+              className="group relative px-12 py-5 bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xl rounded-full transition-all hover:scale-105 hover:shadow-[0_0_50px_rgba(34,211,238,0.4)] active:scale-95"
             >
               <div className="absolute inset-0 bg-white/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-              <span className="relative flex items-center gap-3">
+              <span className="relative flex items-center gap-3 tracking-widest">
                 INITIATE TEST
                 <Zap className="w-5 h-5 fill-current" />
               </span>
@@ -431,8 +445,13 @@ export default function ReactionTestPage() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-6xl font-black text-yellow-400 font-mono tracking-tighter">{leaderboard[0].score}<span className="text-2xl">ms</span></div>
-                  <div className="text-xs text-yellow-500 uppercase tracking-wider mt-2">Record Time</div>
+                  <div className="text-6xl font-black text-yellow-400 font-mono tracking-tighter drop-shadow-[0_0_15px_rgba(250,204,21,0.3)]">
+                    {leaderboard[0].score}<span className="text-2xl text-yellow-600">ms</span>
+                  </div>
+                  <div className="text-xs text-yellow-500 uppercase tracking-wider mt-2 font-bold flex items-center justify-end gap-2">
+                    <span>👑 Current Reward:</span>
+                    <span className="px-2 py-0.5 bg-yellow-400 text-black rounded font-black">FREE OPTIMIZATION</span>
+                  </div>
                 </div>
               </div>
             </div>

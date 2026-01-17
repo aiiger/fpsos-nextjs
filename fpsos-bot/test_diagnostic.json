@@ -1,0 +1,27 @@
+{
+    "system": {
+        "cpu": "AMD Ryzen 5 5600",
+        "gpu": "NVIDIA RTX 3060",
+        "ram": 16,
+        "network": "WiFi"
+    },
+    "issues": {
+        "critical": [
+            "Integrated GPU detected in Device Manager",
+            "HPET (High Precision Event Timer) enabled"
+        ],
+        "warnings": [
+            "WiFi network detected (potential jitter)",
+            "Power plan: Balanced (not High Performance)",
+            "Windows Game Mode: OFF",
+            "Multiple overlays detected (Discord, GeForce Experience)",
+            "GPU drivers not latest version"
+        ]
+    },
+    "performance": {
+        "current_fps": 85,
+        "target_fps": 240,
+        "latency_ms": 45
+    },
+    "timestamp": "2026-01-12T00:00:00Z"
+}

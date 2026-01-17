@@ -1,4 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server';
+import { validateRequest, contactFormSchema } from '@/lib/validation';
+import { checkRateLimit, RATE_LIMITS } from '@/lib/rate-limit';
 
 interface ContactFormData {
   name: string
@@ -12,37 +14,28 @@ interface ContactFormData {
 }
 
 export async function POST(request: NextRequest) {
+  // Rate limiting
+  const rateLimitResponse = checkRateLimit(request, 'contact-form', RATE_LIMITS.CONTACT_FORM);
+  if (rateLimitResponse) {
+    return rateLimitResponse;
+  }
+
   try {
-    const body: ContactFormData = await request.json()
-
-    // Validate required fields
-    if (!body.name || !body.email || !body.systemInfo || !body.issues) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      )
+    // Validate request body
+    const validation = await validateRequest(request, contactFormSchema);
+    if (!validation.success) {
+      return validation.response;
     }
 
-    // Validate email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(body.email)) {
-      return NextResponse.json(
-        { error: 'Invalid email address' },
-        { status: 400 }
-      )
+    const body = validation.data;
+
+    // Validation passed - in production, implement email/database/discord notifications
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Contact form submission:', {
+        timestamp: new Date().toISOString(),
+        ...body
+      })
     }
-
-    // Here you would normally:
-    // 1. Send email to your admin
-    // 2. Store in database
-    // 3. Trigger Discord bot notification
-    // 4. Create calendar invite, etc.
-
-    // For now, log the data (in production, send email)
-    console.log('Contact form submission:', {
-      timestamp: new Date().toISOString(),
-      ...body
-    })
 
     // TODO: Send email via Resend, SendGrid, or similar
     // TODO: Store in Supabase/MongoDB
@@ -58,7 +51,9 @@ export async function POST(request: NextRequest) {
       { status: 200 }
     )
   } catch (error) {
-    console.error('Contact form error:', error)
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Contact form error:', error)
+    }
     return NextResponse.json(
       { error: 'Failed to process request' },
       { status: 500 }

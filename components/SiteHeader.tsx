@@ -3,51 +3,109 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Cpu, Box, Zap, Menu, X } from 'lucide-react'
+import { Cpu, Box, Zap, Menu, X, Command } from 'lucide-react'
+import InputZeroMenu from './InputZeroMenu'
+
+import { usePathname } from 'next/navigation'
 
 export default function SiteHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isEliteMenuOpen, setIsEliteMenuOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
+  const [isVisible, setIsVisible] = useState(true)
+  const [lastScrollY, setLastScrollY] = useState(0)
+  const pathname = usePathname()
+
+  // Detect scroll for styling and auto-hide
+  React.useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY
+
+      // Close mobile menu on scroll
+      if (isMenuOpen) {
+        setIsMenuOpen(false)
+      }
+
+      // Update scrolled state for styling
+      setIsScrolled(currentScrollY > 20)
+
+      // Auto-hide logic
+      if (currentScrollY < 20) {
+        // Always show at top
+        setIsVisible(true)
+      } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        // Scrolling down & past threshold - hide
+        setIsVisible(false)
+      } else if (currentScrollY < lastScrollY) {
+        // Scrolling up - show
+        setIsVisible(true)
+      }
+
+      setLastScrollY(currentScrollY)
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [lastScrollY, isMenuOpen])
+
+  if (pathname?.startsWith('/admin')) return null
 
   return (
     <>
       <motion.nav
-        className="fixed top-0 sm:top-8 left-0 right-0 z-50 pointer-events-none"
+        className="fixed top-0 sm:top-8 left-0 right-0 z-50 pointer-events-none flex justify-center"
         initial={{ y: -50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
+        animate={{
+          y: isVisible ? 0 : -100,
+          opacity: isVisible ? 1 : 0
+        }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
       >
-        <div className="w-full px-6 md:px-12 py-4 flex items-center justify-between pointer-events-auto relative">
+        <div
+          className={`
+                w-full md:w-[90%] lg:w-[85%] max-w-7xl px-6 md:px-8 py-4 
+                flex items-center justify-between pointer-events-auto relative 
+                transition-all duration-500 ease-out
+                ${isScrolled ? 'bg-black/70 backdrop-blur-xl border border-white/10 shadow-2xl shadow-black/50 sm:rounded-full py-3' : 'bg-transparent border-transparent'}
+            `}
+        >
 
-          {/* BACKGROUND BLUR (Mobile Only) */}
-          <div className="absolute inset-0 bg-black/50 backdrop-blur-md border-b border-white/10 sm:hidden" />
+          {/* BACKGROUND BLUR (Mobile Only Default force full width look) */}
+          <div className={`absolute inset-0 bg-black/50 backdrop-blur-md border-b border-white/10 sm:hidden transition-opacity duration-300 ${isScrolled ? 'opacity-0' : 'opacity-100'}`} />
 
           {/* LEFT: Logo */}
-          <Link href="/" className="relative z-10 flex items-center gap-4 group">
+          <Link href="/" className="relative z-10 flex items-center gap-3 group group-hover:opacity-80 transition-opacity">
             <div className="relative">
-              <div className="absolute inset-0 bg-cyan-500/30 blur-lg opacity-0 group-hover:opacity-100 transition-opacity" />
-              <Cpu className="w-8 h-8 sm:w-10 sm:h-10 text-cyan-400 relative z-10 group-hover:text-cyan-300 transition-colors" />
+              <Command className="w-8 h-8 sm:w-9 sm:h-9 text-white relative z-10" />
             </div>
-            <span className="text-white font-black tracking-[0.2em] text-xl sm:text-2xl uppercase font-rajdhani no-underline">
+            <span className="text-white font-bold tracking-tight text-xl sm:text-2xl font-sans no-underline">
               FPSOS
             </span>
           </Link>
 
           {/* CENTER: Navigation Links + Social Icons (Desktop Only) */}
-          <div className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
+          <div className="hidden lg:flex items-center gap-10 absolute left-1/2 -translate-x-1/2">
             {/* Navigation Links */}
             <Link
               href="/reaction-test"
-              className="group flex items-center gap-2.5 text-white/90 hover:text-cyan-400 transition-colors duration-200 no-underline"
+              className="group flex items-center gap-2 text-white/50 hover:text-white transition-all duration-300 no-underline"
             >
-              <Zap className="w-5 h-5 text-cyan-500 group-hover:animate-pulse" />
-              <span className="font-semibold text-[15px] tracking-[0.12em] uppercase font-rajdhani">Reaction Test</span>
+              <Zap className="w-4 h-4 opacity-50 group-hover:opacity-100" />
+              <span className="font-semibold text-[14px] tracking-tight font-sans">Reaction Test</span>
             </Link>
             <Link
-              href="/packages"
-              className="group flex items-center gap-2.5 text-white/90 hover:text-cyan-400 transition-colors duration-200 no-underline"
+              href="/book"
+              className="group flex items-center gap-2 text-white/50 hover:text-white transition-all duration-300 no-underline"
             >
-              <Box className="w-5 h-5 text-cyan-500 group-hover:text-cyan-400 transition-colors" />
-              <span className="font-semibold text-[15px] tracking-[0.12em] uppercase font-rajdhani">Packages</span>
+              <Box className="w-4 h-4 opacity-50 group-hover:opacity-100" />
+              <span className="font-semibold text-[14px] tracking-tight font-sans">Book Session</span>
+            </Link>
+            <Link
+              href="/forge"
+              className="group flex items-center gap-2 text-white/50 hover:text-white transition-all duration-300 no-underline"
+            >
+              <Cpu className="w-4 h-4 opacity-50 group-hover:opacity-100" />
+              <span className="font-semibold text-[14px] tracking-tight font-sans">Hardware</span>
             </Link>
 
             {/* Subtle Divider */}
@@ -73,16 +131,31 @@ export default function SiteHeader() {
             </div>
           </div>
 
-          {/* RIGHT: Hamburger Button (Mobile/Tablet Only) */}
-          <button
-            className="lg:hidden relative z-10 text-white p-2"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label="Toggle Menu"
-          >
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          {/* RIGHT: Hamburger Button (Mobile/Tablet Only) + ELITE Button */}
+          <div className="flex items-center gap-4 relative z-10">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setIsEliteMenuOpen(true)}
+              className="group flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full transition-all duration-300"
+            >
+              <Command className="w-4 h-4 text-white/40 group-hover:text-white" />
+              <span className="text-[11px] font-bold uppercase tracking-[0.1em] text-white/50 group-hover:text-white">Elite</span>
+              <div className="hidden sm:block ml-2 px-1.5 py-0.5 rounded bg-white/10 text-[8px] font-mono text-white/20">ESC</div>
+            </motion.button>
+
+            <button
+              className="lg:hidden text-white p-2"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label="Toggle Menu"
+            >
+              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
       </motion.nav>
+
+      <InputZeroMenu isOpen={isEliteMenuOpen} onClose={() => setIsEliteMenuOpen(false)} />
 
       {/* MOBILE MENU OVERLAY */}
       <AnimatePresence>
@@ -157,8 +230,8 @@ function MobileLink({ href, label, icon, onClick }: { href: string; label: strin
         className="flex items-center gap-4 text-2xl font-black uppercase text-gray-300 hover:text-white transition-colors p-2"
       >
         <motion.div
-          className="text-cyan-500"
-          whileHover={{ rotate: [0, -10, 10, 0], scale: 1.2 }}
+          className="text-white/40 group-hover:text-white"
+          whileHover={{ scale: 1.2 }}
           transition={{ duration: 0.4 }}
         >
           {icon}

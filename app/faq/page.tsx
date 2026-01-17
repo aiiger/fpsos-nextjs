@@ -23,7 +23,7 @@ const faqs: FAQItem[] = [
     id: 'svc-2',
     category: 'service',
     question: 'Is remote optimization safe for my PC?',
-    answer: 'Yes, completely. We use industry-standard remote desktop software and never access personal files. All changes are documented and reversible. We have 100% refund guarantee if you\'re not satisfied. We also create system restore points before making any changes.'
+    answer: 'Yes, completely. We use industry-standard remote desktop software and never access personal files. All changes are documented and reversible. We don\'t get paid until you approve the results. We also create system restore points before making any changes.'
   },
   {
     id: 'svc-3',
@@ -113,7 +113,7 @@ const faqs: FAQItem[] = [
     id: 'ref-1',
     category: 'refund',
     question: 'What\'s your refund policy?',
-    answer: 'We offer a 7-day money-back guarantee. If you\'re not satisfied with results, we\'ll revert all changes and issue a full refund. No questions asked. This is backed by our confidence in our service.'
+    answer: 'We don\'t get paid until you\'re happy. After the session, test for 48 hours in real matches. Not satisfied? Instant refund. If you trust us to dig deeper for complex issues, we\'ll keep working until we find the solution. Simple as that.'
   },
   {
     id: 'ref-2',

@@ -4,6 +4,8 @@ import { Toaster } from 'react-hot-toast';
 import { GeistSans } from 'geist/font/sans';
 import { JetBrains_Mono, Rajdhani } from 'next/font/google';
 import SiteHeader from '@/components/SiteHeader';
+import SupportFloatingButton from '@/components/SupportFloatingButton';
+
 
 const jetbrains = JetBrains_Mono({
   subsets: ['latin'],
@@ -61,6 +63,8 @@ export default function RootLayout({
     <html lang="en" className="bg-[#050505]">
       <body className={`${GeistSans.variable} ${jetbrains.variable} ${rajdhani.variable} bg-[#050505] text-white antialiased`}>
 
+
+
         {/* Layer 0: Obsidian Blueprint Grid (LOCKED) */}
         <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
           {/* Base Color */}
@@ -83,6 +87,7 @@ export default function RootLayout({
         <div className="relative z-10">
           <SiteHeader />
           {children}
+          <SupportFloatingButton />
         </div>
 
         <Toaster

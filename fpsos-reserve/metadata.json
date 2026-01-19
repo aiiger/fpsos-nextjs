@@ -1,0 +1,7 @@
+{
+  "name": "FPSOS Reserve",
+  "description": "A high-end, minimal booking platform for professionals, featuring Apple-inspired UI and AI-powered scheduling assistance.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}

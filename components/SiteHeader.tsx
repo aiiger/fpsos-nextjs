@@ -101,7 +101,7 @@ export default function SiteHeader() {
               <span className="font-semibold text-[14px] tracking-tight font-sans">Book Session</span>
             </Link>
             <Link
-              href="/forge"
+              href="/input-zero"
               className="group flex items-center gap-2 text-white/50 hover:text-white transition-all duration-300 no-underline"
             >
               <Cpu className="w-4 h-4 opacity-50 group-hover:opacity-100" />

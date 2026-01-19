@@ -36,10 +36,10 @@ const metrics = [
 ];
 
 const hardwareSpecs = [
-    { part: 'CPU', detail: 'AMD Ryzen 7 7800X3D (PBO Tuned)' },
-    { part: 'GPU', detail: 'RTX 4080 Super (V-BIOS Optimized)' },
-    { part: 'RAM', detail: '32GB DDR5 6000MT/s CL30 (Sub-timings Tightened)' },
-    { part: 'OS', detail: 'FPSOS Stripped Windows 11 Enterprise' }
+    { part: 'OPTIMIZATION', detail: 'CS2 & Valorant Specific Tuning' },
+    { part: 'COMPATIBILITY', detail: 'FACEIT / Vanguard Hardware Verified' },
+    { part: 'PERIPHERALS', detail: 'S-Tier Mouse & Pad Bundles' },
+    { part: 'LATENCY', detail: 'End-to-End System Reflex Tuning' }
 ];
 
 export default function InputZeroSection() {
@@ -87,7 +87,7 @@ export default function InputZeroSection() {
                             transition={{ delay: 0.1 }}
                             className="text-lg text-white/50 font-medium leading-relaxed max-w-xl mb-10"
                         >
-                            Latency does not exist in a vacuum. It is architected. "InputZero" is our pursuit of the theoretical limit. Every build is engineered for perfect motion-to-photon alignment and <span className="text-white">FACEIT anti-cheat</span> compatibility.
+                            We don't just build PCs; we architect competitive advantages. Our builds are purpose-built for FPS dominance, ensuring perfect compatibility with aggressive anti-cheats like <span className="text-white">FACEIT</span> and <span className="text-white">Vanguard</span>. From the silicon to the mousepad, every component is vetted for one metric: absolute zero latency.
                         </motion.p>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12 w-full max-w-lg">

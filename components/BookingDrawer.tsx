@@ -24,15 +24,12 @@ export default function BookingDrawer() {
   }, [diagnosisId]);
 
   // Calendly URL with pre-fill params
-  // Note: Replace 'your-calendly-link' with actual link
   const getCalendlyUrl = () => {
     const baseUrl = "https://calendly.com/fpsos-support/consultation"; // Placeholder
     let url = `${baseUrl}?background_color=050505&text_color=ffffff&primary_color=00f5ff`;
-    
+
     if (diagnosisData) {
-      // Pre-fill answers (requires knowing Calendly field names, using generic names here)
-      // a1, a2 etc usually map to custom questions
-      url += `&a1=${encodeURIComponent(diagnosisData.systemScore)}`; 
+      url += `&a1=${encodeURIComponent(diagnosisData.systemScore)}`;
       url += `&a2=${encodeURIComponent(diagnosisData.id)}`;
     }
     return url;
@@ -40,16 +37,20 @@ export default function BookingDrawer() {
 
   return (
     <>
-        {/* Trigger Button (if not opened via URL) */}
-        {!isOpen && (
-             <button 
-                onClick={() => setIsOpen(true)}
-                className="fixed bottom-6 right-6 z-50 bg-[#00F5FF] text-black font-bold py-3 px-6 rounded-full shadow-[0_0_20px_rgba(0,245,255,0.4)] hover:shadow-[0_0_30px_rgba(0,245,255,0.6)] transition-all flex items-center gap-2 animate-bounce"
-            >
-                <Calendar className="w-5 h-5" />
-                <span>Book Optimization</span>
-            </button>
-        )}
+      {/* Trigger Button (if not opened via URL) */}
+      {!isOpen && (
+        <motion.button
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setIsOpen(true)}
+          className="fixed bottom-6 right-6 z-50 bg-white/10 backdrop-blur-md border border-white/20 text-white font-medium py-3 px-6 rounded-full shadow-lg hover:bg-white/20 transition-all flex items-center gap-2"
+        >
+          <Calendar className="w-5 h-5" />
+          <span>Book Optimization</span>
+        </motion.button>
+      )}
 
       <AnimatePresence>
         {isOpen && (
@@ -60,7 +61,7 @@ export default function BookingDrawer() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsOpen(false)}
-              className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[999]"
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[999]"
             />
 
             {/* Drawer */}
@@ -68,34 +69,34 @@ export default function BookingDrawer() {
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 h-full w-full max-w-2xl bg-[#0a0a0a] border-l border-white/10 z-[1000] shadow-2xl flex flex-col"
+              transition={{ type: "spring", damping: 30, stiffness: 300, mass: 0.8 }}
+              className="fixed top-0 right-0 h-full w-full max-w-2xl bg-[#0a0a0a]/90 backdrop-blur-xl border-l border-white/10 z-[1000] shadow-2xl flex flex-col"
             >
-              <div className="flex items-center justify-between p-6 border-b border-white/5 bg-[#050505]">
+              <div className="flex items-center justify-between p-6 border-b border-white/10">
                 <div>
-                  <h2 className="text-xl font-bold text-white">Secure Your Slot</h2>
+                  <h2 className="text-xl font-semibold text-white tracking-tight">Secure Your Slot</h2>
                   {diagnosisData && (
-                     <p className="text-sm text-[#00F5FF] font-mono mt-1">
-                        DIAGNOSIS ID: {diagnosisData.id} | SCORE: {diagnosisData.systemScore}
-                     </p>
+                    <p className="text-sm text-cyan-400 font-medium mt-1">
+                      Diagnosis ID: {diagnosisData.id} • Score: {diagnosisData.systemScore}
+                    </p>
                   )}
                 </div>
-                <button 
+                <button
                   onClick={() => setIsOpen(false)}
-                  className="p-2 hover:bg-white/5 rounded-full text-white/60 hover:text-white transition-colors"
+                  className="p-2 hover:bg-white/10 rounded-full text-white/60 hover:text-white transition-colors"
                 >
                   <X className="w-6 h-6" />
                 </button>
               </div>
 
-              <div className="flex-1 w-full bg-[#050505] relative">
-                 <iframe 
-                    src={getCalendlyUrl()} 
-                    width="100%" 
-                    height="100%" 
-                    frameBorder="0"
-                    title="Schedule Appointment"
-                 ></iframe>
+              <div className="flex-1 w-full relative">
+                <iframe
+                  src={getCalendlyUrl()}
+                  width="100%"
+                  height="100%"
+                  frameBorder="0"
+                  title="Schedule Appointment"
+                ></iframe>
               </div>
             </motion.div>
           </>

@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { toast, Toaster } from 'sonner';
+import BotStatusWidget from '@/components/admin/BotStatusWidget';
 
 export default function ApplePremiumDashboard() {
     const router = useRouter();
@@ -108,8 +109,8 @@ export default function ApplePremiumDashboard() {
                             key={item.id}
                             onClick={() => setActiveTab(item.id)}
                             className={`w-full text-left px-3 py-2 rounded-lg flex items-center gap-3 transition-all duration-200 text-[14px] font-medium ${activeTab === item.id
-                                    ? 'bg-white/10 text-white shadow-inner'
-                                    : 'text-white/50 hover:text-white hover:bg-white/5'
+                                ? 'bg-white/10 text-white shadow-inner'
+                                : 'text-white/50 hover:text-white hover:bg-white/5'
                                 }`}
                         >
                             <item.icon className={`w-[18px] h-[18px] ${activeTab === item.id ? 'text-white' : 'text-white/50'}`} />
@@ -288,8 +289,8 @@ export default function ApplePremiumDashboard() {
                                                 <td className="px-6 py-4 text-[14px] font-medium text-white">{booking.amount}</td>
                                                 <td className="px-6 py-4">
                                                     <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-medium border ${booking.status === 'confirmed'
-                                                            ? 'bg-blue-500/10 text-blue-400 border-blue-500/20'
-                                                            : 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'
+                                                        ? 'bg-blue-500/10 text-blue-400 border-blue-500/20'
+                                                        : 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'
                                                         }`}>
                                                         {booking.status}
                                                     </span>
@@ -311,54 +312,43 @@ export default function ApplePremiumDashboard() {
                                 key="automation"
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
-                                className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                                className="grid grid-cols-1 lg:grid-cols-3 gap-6"
                             >
-                                <div className="bg-[#1c1c1e] rounded-[24px] p-8 border border-white/5">
-                                    <div className="flex items-center gap-4 mb-8">
-                                        <div className="w-12 h-12 rounded-[18px] bg-indigo-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
-                                            <Bot className="w-6 h-6 text-white" />
+                                {/* Left Column: Status & Controls */}
+                                <div className="space-y-6">
+                                    <BotStatusWidget />
+
+                                    <div className="bg-[#1c1c1e] rounded-[24px] p-6 border border-white/5">
+                                        <h3 className="text-[15px] font-semibold text-white mb-4 flex items-center gap-2">
+                                            <Bot className="w-4 h-4 text-blue-400" /> Actions
+                                        </h3>
+                                        <div className="space-y-3">
+                                            <button
+                                                onClick={() => handleBotAction('trigger_diagnostic')}
+                                                className="w-full flex items-center justify-between p-3 bg-[#2c2c2e] hover:bg-[#3a3a3c] rounded-xl transition-all group"
+                                            >
+                                                <span className="text-[13px] font-medium text-white/80">Run Diagnostics</span>
+                                                <Activity className="w-4 h-4 text-blue-400 group-hover:scale-110 transition-transform" />
+                                            </button>
+
+                                            <button
+                                                onClick={() => handleBotAction('status')}
+                                                className="w-full flex items-center justify-between p-3 bg-[#2c2c2e] hover:bg-[#3a3a3c] rounded-xl transition-all group"
+                                            >
+                                                <span className="text-[13px] font-medium text-white/80">Refresh Status</span>
+                                                <Server className="w-4 h-4 text-green-400 group-hover:scale-110 transition-transform" />
+                                            </button>
+
+                                            <button className="w-full flex items-center justify-between p-3 bg-red-500/10 hover:bg-red-500/20 border border-red-500/10 rounded-xl transition-all group opacity-60 cursor-not-allowed">
+                                                <span className="text-[13px] font-medium text-red-400">Kill Process</span>
+                                                <Zap className="w-4 h-4 text-red-400" />
+                                            </button>
                                         </div>
-                                        <div>
-                                            <h3 className="text-lg font-semibold tracking-tight">Bot Controls</h3>
-                                            <p className="text-[13px] text-white/40">Manage automated system processes</p>
-                                        </div>
-                                    </div>
-
-                                    <div className="space-y-3">
-                                        <button
-                                            onClick={() => handleBotAction('trigger_diagnostic')}
-                                            className="w-full flex items-center justify-between p-4 bg-[#2c2c2e] hover:bg-[#3a3a3c] rounded-[18px] transition-all group"
-                                        >
-                                            <div className="flex items-center gap-3">
-                                                <Activity className="w-5 h-5 text-blue-400" />
-                                                <span className="text-[14px] font-medium text-white/80">Run System Diagnostics</span>
-                                            </div>
-                                            <ChevronRight className="w-4 h-4 text-white/20 group-hover:text-white/60" />
-                                        </button>
-
-                                        <button
-                                            onClick={() => handleBotAction('status')}
-                                            className="w-full flex items-center justify-between p-4 bg-[#2c2c2e] hover:bg-[#3a3a3c] rounded-[18px] transition-all group"
-                                        >
-                                            <div className="flex items-center gap-3">
-                                                <Server className="w-5 h-5 text-green-400" />
-                                                <span className="text-[14px] font-medium text-white/80">Check Server Status</span>
-                                            </div>
-                                            <ChevronRight className="w-4 h-4 text-white/20 group-hover:text-white/60" />
-                                        </button>
-
-                                        <button
-                                            className="w-full flex items-center justify-between p-4 bg-red-500/10 hover:bg-red-500/20 border border-red-500/10 rounded-[18px] transition-all group opacity-60 cursor-not-allowed"
-                                        >
-                                            <div className="flex items-center gap-3">
-                                                <Zap className="w-5 h-5 text-red-400" />
-                                                <span className="text-[14px] font-medium text-red-400">Emergency Shutdown</span>
-                                            </div>
-                                        </button>
                                     </div>
                                 </div>
 
-                                <div className="bg-[#1c1c1e] rounded-[24px] p-8 border border-white/5 flex flex-col">
+                                {/* Right Column: Logs (Spans 2 cols) */}
+                                <div className="lg:col-span-2 bg-[#1c1c1e] rounded-[24px] p-8 border border-white/5 flex flex-col h-[500px]">
                                     <div className="flex items-center gap-4 mb-6">
                                         <div className="w-12 h-12 rounded-[18px] bg-gray-700 flex items-center justify-center shadow-lg">
                                             <Terminal className="w-6 h-6 text-white" />
@@ -369,7 +359,7 @@ export default function ApplePremiumDashboard() {
                                         </div>
                                     </div>
 
-                                    <div className="flex-1 bg-[#000000] rounded-[18px] p-4 font-mono text-[12px] text-white/60 overflow-y-auto space-y-2 max-h-[300px] border border-white/5">
+                                    <div className="flex-1 bg-[#000000] rounded-[18px] p-4 font-mono text-[12px] text-white/60 overflow-y-auto space-y-2 border border-white/5 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
                                         <div className="flex gap-3">
                                             <span className="text-blue-400">[06:04:12]</span>
                                             <span>System initialized successfully</span>
@@ -396,7 +386,7 @@ export default function ApplePremiumDashboard() {
                                         <input
                                             type="text"
                                             placeholder="Execute command..."
-                                            className="w-full bg-[#2c2c2e] border-none rounded-xl py-3 pl-4 pr-12 text-sm text-white placeholder:text-white/30 focus:ring-2 focus:ring-white/20 outline-none"
+                                            className="w-full bg-[#2c2c2e] border-none rounded-xl py-3 pl-4 pr-12 text-sm text-white placeholder:text-white/30 focus:ring-2 focus:ring-white/20 outline-none transition-all"
                                         />
                                         <div className="absolute right-3 top-1/2 -translate-y-1/2 px-2 py-0.5 bg-white/10 rounded text-[10px] text-white/40 font-bold">
                                             CMD

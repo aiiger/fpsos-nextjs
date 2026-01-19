@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth';
 import { z } from 'zod';
 
-const BOT_API_URL = 'http://localhost:8080/api';
+const BOT_API_URL = 'http://localhost:8088/api';
 
 const botActionSchema = z.object({
     action: z.enum(['trigger_diagnostic', 'status']),

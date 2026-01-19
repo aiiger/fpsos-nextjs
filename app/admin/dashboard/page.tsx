@@ -11,9 +11,11 @@ import {
     CheckCircle,
     XCircle,
     Clock,
-    Laptop
+    Laptop,
+    CalendarDays
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function AdminDashboard() {
     const router = useRouter();
@@ -132,6 +134,13 @@ export default function AdminDashboard() {
                         </div>
                         <span className="capitalize">Automation</span>
                     </button>
+                    <Link
+                        href="/admin/availability"
+                        className="w-full text-left px-4 py-3.5 rounded-lg flex items-center gap-3.5 transition-all text-sm font-medium text-zinc-400 hover:text-white hover:bg-zinc-900/50"
+                    >
+                        <CalendarDays className="w-4 h-4 text-zinc-500" />
+                        <span>Availability</span>
+                    </Link>
                 </nav>
 
                 <div className="mt-auto pt-6 border-t border-zinc-800">

@@ -98,43 +98,121 @@ export async function POST(request: Request) {
 
         // 2. Emails (Customer + Admin)
         if (resend) {
-            // A. Customer Receipt
+            // A. Customer Receipt - Enhanced
             if (email) {
+                // Generate Google Calendar link (with fallback)
+                let gcalLink = '';
+                try {
+                    const sessionDate = new Date(date_time);
+                    if (!isNaN(sessionDate.getTime())) {
+                        const endDate = new Date(sessionDate.getTime() + 60 * 60 * 1000); // +1 hour
+                        const gcalStart = sessionDate.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+                        const gcalEnd = endDate.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+                        gcalLink = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=FPSOS%20${encodeURIComponent(package_name)}&dates=${gcalStart}/${gcalEnd}&details=Booking%20ID:%20${newBookingId}%0APackage:%20${encodeURIComponent(package_name)}%0AHave%20TeamViewer%20ready!&location=Remote%20Session`;
+                    }
+                } catch (e) {
+                    console.error('Calendar link generation failed:', e);
+                }
+
                 try {
                     await resend.emails.send({
                         from: 'FPSOS Bookings <bookings@resend.dev>',
                         to: email,
-                        subject: `Booking Received: ${package_name} - Payment Required`,
+                        subject: `🎮 Booking Confirmed: ${package_name} | Action Required`,
                         html: `
-                        <div style="font-family: sans-serif; padding: 20px; color: #333;">
-                            <h1 style="color: #06b6d4;">Booking Received! 🚀</h1>
-                            <p>Hi <strong>${client_name}</strong>,</p>
-                            <p>We have received your booking request for <strong>${package_name}</strong>.</p>
-
-                            <div style="background: #f4f4f5; padding: 15px; border-radius: 8px; margin: 20px 0;">
-                                <h3 style="margin-top:0;">Session Details</h3>
-                                <p><strong>Booking ID:</strong> #${newBookingId}</p>
-                                <p><strong>Package:</strong> ${package_name}</p>
-                                <p><strong>Date/Time:</strong> ${date_time}</p>
-                                <p><strong>Total:</strong> ${amount}</p>
-                                ${add_ons && add_ons.length > 0 ? `<p><strong>Extras:</strong> ${add_ons.join(', ')}</p>` : ''}
+                        <div style="font-family: 'Segoe UI', sans-serif; max-width: 600px; margin: 0 auto; background: #0a0a0a; color: #fff; padding: 0;">
+                            <!-- Header -->
+                            <div style="background: linear-gradient(135deg, #06b6d4, #3b82f6); padding: 30px; text-align: center;">
+                                <h1 style="margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.5px;">FPSOS</h1>
+                                <p style="margin: 5px 0 0; font-size: 11px; text-transform: uppercase; letter-spacing: 3px; opacity: 0.9;">Consulting Group</p>
                             </div>
 
-                            <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0;">
-                                <h3 style="margin-top:0; color: #856404;">⏳ Payment Pending</h3>
-                                <p style="color: #856404;">Your booking will be confirmed automatically once payment is received via PayPal.</p>
-                                <p style="color: #856404;"><strong>Manage your booking:</strong> <a href="https://fpsos.gg/booking/${bookingToken}" style="color: #0066cc;">Click here</a></p>
+                            <!-- Main Content -->
+                            <div style="padding: 30px;">
+                                <h2 style="color: #4ade80; margin: 0 0 10px; font-size: 24px;">Booking Received! 🚀</h2>
+                                <p style="color: #a1a1aa; margin: 0 0 25px;">Hi <strong style="color: #fff;">${client_name}</strong>, your session is locked in.</p>
+
+                                <!-- Session Card -->
+                                <div style="background: #18181b; border: 1px solid #27272a; border-radius: 12px; padding: 20px; margin-bottom: 25px;">
+                                    <table style="width: 100%; border-collapse: collapse;">
+                                        <tr>
+                                            <td style="padding: 8px 0; color: #71717a; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Booking ID</td>
+                                            <td style="padding: 8px 0; color: #fff; font-weight: 600; text-align: right; font-family: monospace;">#${newBookingId}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 8px 0; color: #71717a; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Package</td>
+                                            <td style="padding: 8px 0; color: #06b6d4; font-weight: 600; text-align: right;">${package_name}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 8px 0; color: #71717a; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Date & Time</td>
+                                            <td style="padding: 8px 0; color: #fff; font-weight: 600; text-align: right;">${date_time}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 8px 0; color: #71717a; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Total</td>
+                                            <td style="padding: 8px 0; color: #4ade80; font-weight: 700; text-align: right; font-size: 18px;">${amount}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+
+                                <!-- Payment Warning -->
+                                <div style="background: #422006; border-left: 4px solid #f59e0b; padding: 15px; border-radius: 0 8px 8px 0; margin-bottom: 25px;">
+                                    <p style="margin: 0; color: #fbbf24; font-weight: 600;">⏳ Payment Required</p>
+                                    <p style="margin: 8px 0 0; color: #fcd34d; font-size: 14px;">Complete your PayPal payment to confirm this booking.</p>
+                                </div>
+
+                                <!-- Add to Calendar -->
+                                ${gcalLink ? `
+                                <div style="text-align: center; margin-bottom: 25px;">
+                                    <a href="${gcalLink}" target="_blank" style="display: inline-block; background: #fff; color: #000; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px;">
+                                        📅 Add to Google Calendar
+                                    </a>
+                                </div>
+                                ` : ''}
+
+                                <!-- Checklist -->
+                                <h3 style="color: #fff; font-size: 16px; margin: 0 0 15px; text-transform: uppercase; letter-spacing: 1px;">✅ Before Your Session</h3>
+                                
+                                <div style="background: #18181b; border-radius: 12px; overflow: hidden;">
+                                    <!-- Item 1 -->
+                                    <div style="padding: 15px 20px; border-bottom: 1px solid #27272a;">
+                                        <p style="margin: 0 0 5px; color: #fff; font-weight: 600;">1. Install Remote Software</p>
+                                        <p style="margin: 0 0 10px; color: #71717a; font-size: 13px;">We need one of these to access your PC:</p>
+                                        <a href="https://www.teamviewer.com/en/download/" target="_blank" style="display: inline-block; background: #0e7490; color: #fff; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: 600; margin-right: 8px;">Download TeamViewer</a>
+                                        <a href="https://anydesk.com/en/downloads" target="_blank" style="display: inline-block; background: #27272a; color: #fff; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: 600;">Download AnyDesk</a>
+                                    </div>
+                                    
+                                    <!-- Item 2 -->
+                                    <div style="padding: 15px 20px; border-bottom: 1px solid #27272a;">
+                                        <p style="margin: 0 0 5px; color: #fff; font-weight: 600;">2. Join Our Discord</p>
+                                        <p style="margin: 0 0 10px; color: #71717a; font-size: 13px;">We'll coordinate the session through Discord:</p>
+                                        <a href="https://discord.gg/9UXeaSx4SF" target="_blank" style="display: inline-block; background: #5865F2; color: #fff; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: 600;">Join FPSOS Discord</a>
+                                    </div>
+                                    
+                                    <!-- Item 3 -->
+                                    <div style="padding: 15px 20px; border-bottom: 1px solid #27272a;">
+                                        <p style="margin: 0 0 5px; color: #fff; font-weight: 600;">3. Have Your Windows Key Ready</p>
+                                        <p style="margin: 0; color: #71717a; font-size: 13px;">If you need a fresh install, we'll need your license key.</p>
+                                    </div>
+                                    
+                                    <!-- Item 4 -->
+                                    <div style="padding: 15px 20px;">
+                                        <p style="margin: 0 0 5px; color: #fff; font-weight: 600;">4. Close Background Apps</p>
+                                        <p style="margin: 0; color: #71717a; font-size: 13px;">Close games, browsers, and unnecessary programs before we start.</p>
+                                    </div>
+                                </div>
+
+                                <!-- Manage Booking -->
+                                <div style="text-align: center; margin-top: 25px; padding-top: 25px; border-top: 1px solid #27272a;">
+                                    <p style="color: #71717a; font-size: 13px; margin: 0 0 10px;">Need to make changes?</p>
+                                    <a href="https://fpsos.gg/booking/${bookingToken}" style="color: #06b6d4; font-size: 14px;">Manage Your Booking →</a>
+                                </div>
                             </div>
 
-                            <h3>✅ Next Steps Checklist:</h3>
-                            <ul>
-                                <li>Complete payment via PayPal (you should have been redirected)</li>
-                                <li>Join our <strong><a href="https://discord.gg/9UXeaSx4SF" style="color: #5865F2;">Discord Server</a></strong> immediately.</li>
-                                <li><strong>DM the bot or an admin</strong> with your Booking ID: #${newBookingId}</li>
-                                <li>Ensure you have <strong>TeamViewer</strong> or <strong>AnyDesk</strong> installed.</li>
-                                <li>Have your <strong>Windows License Key</strong> ready (if applicable).</li>
-                            </ul>
-                            <p><em>- The FPSOS Team</em></p>
+                            <!-- Footer -->
+                            <div style="background: #18181b; padding: 20px; text-align: center; border-top: 1px solid #27272a;">
+                                <p style="margin: 0; color: #52525b; font-size: 12px;">FPSOS Consulting Group</p>
+                                <p style="margin: 5px 0 0; color: #3f3f46; font-size: 11px;">Engineering, Not Magic.</p>
+                            </div>
                         </div>
                     `
                     });

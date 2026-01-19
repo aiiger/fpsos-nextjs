@@ -1,0 +1,10 @@
+﻿python : [2026-01-19 04:29:47] [INFO    ] discord.client: logging in using static token
+At Y:\fpsos-nextjs\fpsos-bot\keep_alive.ps1:18 char:5
++     python $botScript 2>&1 | Out-File -FilePath $logFile -Encoding UT ...
++     ~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([2026-01-19 04:...ng static token:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[2026-01-19 04:29:50] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: 
+eba7d11033316766f5fd08a4176a500c).
+[2026-01-19 06:25:43] [INFO    ] discord.gateway: Shard ID None has successfully RESUMED session eba7d11033316766f5fd08a4176a500c.

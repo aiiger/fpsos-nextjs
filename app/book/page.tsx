@@ -5,82 +5,110 @@ import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Check,
-    ChevronRight,
     Calendar,
     Clock,
-    CreditCard,
-    ShieldCheck,
     Zap,
     Cpu,
     Server,
     ArrowRight,
+    ArrowLeft,
     Users,
-    Shield
+    Shield,
+    Sparkles,
+    ChevronRight,
+    Star
 } from 'lucide-react';
 import { toast, Toaster } from 'react-hot-toast';
 import BackgroundGrid from '@/components/BackgroundGrid';
+import CalendarGrid from '@/components/booking/CalendarGrid';
+import TimeSlotPicker from '@/components/booking/TimeSlotPicker';
+import BookingSummary from '@/components/booking/BookingSummary';
+import ConfirmationSuccess from '@/components/booking/ConfirmationSuccess';
 
+// Package definitions
 const PACKAGES = [
     {
         id: 'quick',
         name: 'Quick Remote Fix',
         price: 'AED 199',
+        priceNum: 199,
         duration: '30 Min',
         features: ['Driver Optimization', 'Windows Debloat', 'Game Config Tuning'],
         icon: Zap,
-        color: 'cyan'
+        color: 'cyan',
+        description: "Essential tuning for instant improvements."
     },
     {
         id: 'full',
         name: 'Full System Tune-Up',
         price: 'AED 399',
+        priceNum: 399,
         duration: '60 Min',
         features: ['Deep Windows Stripping', 'Network Optimization', 'Process Lasso Config', 'Latency Reduction'],
         icon: Server,
         color: 'purple',
-        popular: true
+        popular: true,
+        description: "Complete overhaul for maximum performance."
     },
     {
         id: 'extreme',
         name: 'Extreme BIOSPRIME',
         price: 'AED 699',
+        priceNum: 699,
         duration: '90 Min',
         features: ['Custom BIOS Tuning', 'RAM Overclocking', 'Electrical Optimization', 'Input Lag Nullification'],
         icon: Cpu,
-        color: 'orange'
+        color: 'orange',
+        description: "Professional-grade hardware tuning."
     }
 ];
 
-const DAYS = Array.from({ length: 14 }, (_, i) => {
-    const d = new Date();
-    d.setDate(d.getDate() + i + 1);
-    return d;
-});
-
 function BookingContent() {
     const searchParams = useSearchParams();
+
+    // Step management (1: Schedule, 2: Details, 3: Success)
     const [step, setStep] = useState(1);
+
+    // Selections
     const [selectedPackage, setSelectedPackage] = useState(PACKAGES[1]);
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
     const [selectedTime, setSelectedTime] = useState<string | null>(null);
-    const [availableSlots, setAvailableSlots] = useState<any[]>([]);
-    const [availableTimes, setAvailableTimes] = useState<{ display: string, original: string, originalDate: string }[]>([]);
-    const [loadingAvailability, setLoadingAvailability] = useState(false);
-    const [loading, setLoading] = useState(false);
 
+    // Availability data
+    const [availableSlots, setAvailableSlots] = useState<any[]>([]);
+    const [availableTimes, setAvailableTimes] = useState<{ display: string; original: string; originalDate: string }[]>([]);
+    const [loadingAvailability, setLoadingAvailability] = useState(false);
+
+    // Form data
     const [formData, setFormData] = useState({
         name: '',
         discord: '',
         email: '',
-        addons: [] as string[]
+        notes: ''
     });
 
+    // AI Suggestions
+    const [aiSuggestion, setAiSuggestion] = useState('');
+    const [isAiLoading, setIsAiLoading] = useState(false);
+
+    // Loading & success states
+    const [loading, setLoading] = useState(false);
+    const [bookingResult, setBookingResult] = useState<{
+        id: string;
+        packageName: string;
+        dateTime: string;
+        amount: string;
+        email: string;
+    } | null>(null);
+
+    // User timezone
     const [userTimezone, setUserTimezone] = useState('');
 
     useEffect(() => {
         setUserTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone);
     }, []);
 
+    // Load package from URL
     useEffect(() => {
         const packageParam = searchParams.get('package');
         if (packageParam) {
@@ -89,20 +117,15 @@ function BookingContent() {
         }
     }, [searchParams]);
 
+    // Fetch availability on mount
     useEffect(() => {
-        if (step === 2) fetchAvailability();
-    }, [step]);
+        fetchAvailability();
+    }, []);
 
+    // Update time slots when date changes
     useEffect(() => {
         if (selectedDate && availableSlots.length > 0) {
-            // Logic to convert Dubai slots to Local Time for display
-            // But keep track of original Dubai time for booking
-            const dateStr = selectedDate.toISOString().split('T')[0];
-
-            // Filter slots that match the selected LOCAL date
-            // This requires parsing the Dubai time, converting to Local, and checking the date
             const relevantSlots = availableSlots.filter((slot: any) => {
-                // Parse Dubai time (UTC+4)
                 const slotDate = new Date(`${slot.date}T${slot.time}:00+04:00`);
                 return slotDate.toDateString() === selectedDate.toDateString();
             });
@@ -111,29 +134,41 @@ function BookingContent() {
                 const slotDate = new Date(`${slot.date}T${slot.time}:00+04:00`);
                 return {
                     display: slotDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                    original: slot.time, // Keep Dubai time for backend
+                    original: slot.time,
                     originalDate: slot.date
                 };
             });
 
             setAvailableTimes(times);
+            setSelectedTime(null); // Reset time when date changes
         }
     }, [selectedDate, availableSlots]);
 
     const fetchAvailability = async () => {
         setLoadingAvailability(true);
         try {
-            const startDate = new Date();
-            const endDate = new Date();
-            endDate.setDate(endDate.getDate() + 21); // Fetch 3 weeks ahead
+            const today = new Date();
+            const future = new Date();
+            future.setDate(future.getDate() + 30);
 
-            const startStr = startDate.toISOString().split('T')[0];
-            const endStr = endDate.toISOString().split('T')[0];
+            // Format dates as YYYY-MM-DD in local timezone
+            const formatDate = (d: Date) => {
+                const year = d.getFullYear();
+                const month = String(d.getMonth() + 1).padStart(2, '0');
+                const day = String(d.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            };
+
+            const startStr = formatDate(today);
+            const endStr = formatDate(future);
 
             const res = await fetch(`/api/availability?startDate=${startStr}&endDate=${endStr}`);
             if (res.ok) {
                 const slots = await res.json();
                 setAvailableSlots(slots);
+            } else {
+                const err = await res.json();
+                console.error('Availability API error:', err);
             }
         } catch (error) {
             console.error('Failed to fetch availability:', error);
@@ -143,26 +178,27 @@ function BookingContent() {
         }
     };
 
-    const basePrice = parseInt(selectedPackage.price.replace('AED ', ''));
-    const totalPrice = basePrice;
-
-    const handleNext = () => setStep(s => Math.min(s + 1, 3));
-    const handleBack = () => setStep(s => Math.max(s - 1, 1));
-
     const handleBooking = async () => {
+        if (!selectedDate || !selectedTime || !formData.name || !formData.email || !formData.discord) {
+            toast.error('Please fill in all required fields');
+            return;
+        }
+
         setLoading(true);
-        const toastId = toast.loading('Initiating Secure Handshake...');
+        const toastId = toast.loading('Securing your slot...');
 
         try {
+            const dateTimeStr = `${selectedDate.toLocaleDateString()} ${selectedTime}`;
+
             const payload = {
                 client_name: formData.name,
                 discord_id: formData.discord,
                 email: formData.email,
                 package_id: selectedPackage.id,
                 package_name: selectedPackage.name,
-                amount: `AED ${totalPrice}`,
-                date_time: `${selectedDate?.toLocaleDateString()} ${selectedTime}`,
-                add_ons: formData.addons
+                amount: selectedPackage.price,
+                date_time: dateTimeStr,
+                add_ons: []
             };
 
             const res = await fetch('/api/bookings', {
@@ -171,432 +207,434 @@ function BookingContent() {
                 body: JSON.stringify(payload)
             });
 
-            if (res.ok) {
-                toast.success('BOOKING CONFIRMED - Redirecting to PayPal...', {
+            const data = await res.json();
+
+            if (res.ok && data.success) {
+                toast.success('Booking Initiated', {
                     id: toastId,
-                    style: { background: '#0a0a0a', color: '#4ade80', border: '1px solid #4ade80' },
-                    icon: '🚀'
+                    icon: '🔒',
+                    duration: 3000
                 });
 
+                // Open PayPal
                 const PAYPAL_USERNAME = 'rlikercreations';
-                const paypalUrl = `https://paypal.me/${PAYPAL_USERNAME}/${totalPrice}AED`;
+                const paypalUrl = `https://paypal.me/${PAYPAL_USERNAME}/${selectedPackage.priceNum}AED`;
+
                 setTimeout(() => {
                     window.open(paypalUrl, '_blank');
-                    setStep(1);
-                    setLoading(false);
-                }, 2000);
+                }, 1500);
+
+                // Show success screen
+                setBookingResult({
+                    id: data.id,
+                    packageName: selectedPackage.name,
+                    dateTime: dateTimeStr,
+                    amount: selectedPackage.price,
+                    email: formData.email
+                });
+                setStep(3);
             } else {
-                throw new Error('API Error');
+                throw new Error(data.error || 'Booking failed');
             }
-        } catch (error) {
-            toast.error('CONNECTION FAILED', { id: toastId });
+        } catch (error: any) {
+            console.error('Booking error:', error);
+            toast.error(error.message || 'Connection failed. Please try again.', { id: toastId });
+        } finally {
             setLoading(false);
         }
     };
 
-    return (
-        <div className="min-h-screen bg-[#050505] text-white font-sans selection:bg-cyan-500/30 overflow-hidden relative pb-32">
-            <BackgroundGrid />
-            <Toaster position="top-center" />
+    const resetBooking = () => {
+        setStep(1);
+        setSelectedDate(null);
+        setSelectedTime(null);
+        setFormData({ name: '', discord: '', email: '', notes: '' });
+        setBookingResult(null);
+        setAiSuggestion('');
+    };
 
-            {/* Header */}
-            <nav className="fixed top-0 w-full z-50 border-b border-white/10 bg-black/80 backdrop-blur-xl">
-                <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+    const displayTime = availableTimes.find(t => t.original === selectedTime)?.display;
+    const canProceedToDetails = selectedDate && selectedTime;
+    const canSubmit = formData.name && formData.email && formData.discord;
+
+    return (
+        <div className="min-h-screen bg-[#000000] text-white font-sans selection:bg-cyan-500/30 overflow-x-hidden relative">
+            <BackgroundGrid />
+            <Toaster position="top-center" toastOptions={{
+                style: {
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    backdropFilter: 'blur(10px)',
+                    color: '#fff',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius: '12px',
+                    fontSize: '14px',
+                },
+            }} />
+
+            {/* Navbar - Glass */}
+            <nav className="fixed top-0 w-full z-50 border-b border-white/5 bg-black/60 backdrop-blur-xl">
+                <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-purple-600 rounded-lg flex items-center justify-center">
-                            <span className="font-bold text-lg">F</span>
-                        </div>
-                        <div>
-                            <h1 className="font-bold tracking-widest text-lg leading-none">FPSOS</h1>
-                            <p className="text-[10px] text-white/40 uppercase tracking-[0.2em]">Consulting Group</p>
-                        </div>
+                        <a href="/" className="flex items-center gap-2 group">
+                            <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center group-hover:bg-white/20 transition-all">
+                                <span className="font-bold text-sm">F</span>
+                            </div>
+                            <span className="font-semibold tracking-tight text-white/90">FPSOS</span>
+                        </a>
                     </div>
-                    <div className="hidden md:flex items-center gap-8 text-sm text-white/60">
-                        <div className="flex items-center gap-2">
-                            <ShieldCheck className="w-4 h-4 text-green-400" />
-                            <span>Verified Partners</span>
-                        </div>
-                        <div className="px-4 py-2 border border-white/10 rounded-full text-xs bg-white/5">
-                            Global Availability: <span className="text-green-400">Online</span>
-                        </div>
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/5 text-xs font-medium text-white/60">
+                        <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                        <span>Systems Operational</span>
                     </div>
                 </div>
             </nav>
 
-            <main className="relative pt-32 pb-20 px-6 max-w-7xl mx-auto">
-                {/* Progress Bar */}
-                <div className="mb-12 max-w-2xl mx-auto">
-                    <div className="flex justify-between text-xs uppercase tracking-widest text-white/40 mb-4 px-2">
-                        <span className={step >= 1 ? 'text-cyan-400' : ''}>01 Service</span>
-                        <span className={step >= 2 ? 'text-cyan-400' : ''}>02 Schedule</span>
-                        <span className={step >= 3 ? 'text-cyan-400' : ''}>03 Details</span>
-                    </div>
-                    <div className="h-1 bg-white/10 rounded-full overflow-hidden">
-                        <motion.div
-                            className="h-full bg-gradient-to-r from-cyan-500 to-amber-500"
-                            initial={{ width: '0%' }}
-                            animate={{ width: `${(step / 3) * 100}%` }}
-                            transition={{ duration: 0.5, ease: "easeInOut" }}
-                        />
-                    </div>
-                </div>
-
+            <main className="relative pt-24 pb-32 px-4 md:px-6 max-w-7xl mx-auto">
                 <AnimatePresence mode="wait">
-                    {/* STEP 1: SELECT PACKAGE */}
+                    {/* STEP 1: SCHEDULE */}
                     {step === 1 && (
                         <motion.div
                             key="step1"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, x: -20 }}
-                            transition={{ duration: 0.5, type: "spring", stiffness: 260, damping: 20 }}
-                            className="max-w-7xl mx-auto"
+                            exit={{ opacity: 0, filter: 'blur(10px)' }}
+                            transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
+                            className="flex flex-col gap-8"
                         >
-                            {/* Welcome Card */}
-                            <div className="mb-10 p-6 rounded-2xl relative overflow-hidden bg-gradient-to-r from-black/80 via-black/60 to-black/80 border border-cyan-500/30 backdrop-blur-xl">
-                                <div className="absolute top-0 left-0 w-12 h-12 border-t-2 border-l-2 border-cyan-500/40 rounded-tl-xl" />
-                                <div className="absolute bottom-0 right-0 w-12 h-12 border-b-2 border-r-2 border-amber-500/40 rounded-br-xl" />
-                                <div className="flex items-center gap-4 relative z-10">
-                                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center shadow-[0_0_20px_rgba(6,182,212,0.4)]">
-                                        <Cpu className="w-7 h-7 text-white" />
-                                    </div>
-                                    <div>
-                                        <h2 className="text-xl font-bold text-white mb-1 tracking-tight">Prepare for Your Session</h2>
-                                        <p className="text-white/70 text-sm font-light">
-                                            Join our <a href="https://discord.gg/9UXeaSx4SF" target="_blank" rel="noopener" className="text-cyan-400 hover:text-cyan-300 font-semibold">Discord Server</a> for real-time support.
-                                        </p>
-                                    </div>
-                                </div>
+                            {/* Header */}
+                            <div className="text-center space-y-2 mb-4">
+                                <motion.h1
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="text-4xl md:text-5xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white to-white/60"
+                                >
+                                    Select Your Session.
+                                </motion.h1>
+                                <p className="text-lg text-white/40 font-medium">Choose a package and find a time that works for you.</p>
                             </div>
 
                             {/* Package Cards */}
-                            <div className="grid md:grid-cols-3 gap-8">
+                            <div className="grid md:grid-cols-3 gap-4 max-w-5xl mx-auto w-full">
                                 {PACKAGES.map((pkg) => (
-                                    <motion.div
+                                    <button
                                         key={pkg.id}
                                         onClick={() => setSelectedPackage(pkg)}
-                                        whileHover={{ scale: 1.02, y: -5 }}
-                                        whileTap={{ scale: 0.99 }}
                                         className={`
-                                            relative group cursor-pointer p-7 py-10 rounded-[1.8rem] backdrop-blur-xl transition-all duration-500 overflow-hidden flex flex-col justify-between min-h-[675px]
+                                            relative p-6 rounded-[24px] text-left transition-all duration-300 group
                                             ${selectedPackage.id === pkg.id
-                                                ? 'bg-black/80 border-2 border-cyan-400/80 shadow-[0_0_60px_-10px_rgba(0,245,255,0.5)] z-10'
-                                                : 'bg-black/40 border border-white/10 hover:border-cyan-500/40 hover:bg-black/60'}
+                                                ? 'bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl scale-[1.02]'
+                                                : 'bg-white/5 border-transparent hover:bg-white/10 hover:border-white/10'
+                                            }
+                                            border
                                         `}
                                     >
-                                        {/* Corner Accents - Subtle Tech details */}
-                                        <div className={`absolute top-0 right-0 p-6 transition-opacity duration-300 ${selectedPackage.id === pkg.id ? 'opacity-100' : 'opacity-0'}`}>
-                                            <div className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_10px_rgba(0,245,255,1)] animate-pulse" />
+                                        <div className="flex justify-between items-start mb-4">
+                                            <div className={`p-3 rounded-2xl ${selectedPackage.id === pkg.id ? 'bg-white/20 text-white' : 'bg-white/5 text-white/60'}`}>
+                                                <pkg.icon className="w-6 h-6" />
+                                            </div>
+                                            {pkg.popular && (
+                                                <div className="px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-[10px] font-bold uppercase tracking-wider">
+                                                    Popular
+                                                </div>
+                                            )}
                                         </div>
 
-                                        {pkg.popular && (
-                                            <div className="absolute top-0 left-1/2 -translate-x-1/2">
-                                                <div className="bg-gradient-to-r from-cyan-500 via-teal-400 to-cyan-500 text-black text-[11px] font-black uppercase tracking-[0.2em] px-6 py-2 rounded-b-xl shadow-[0_5px_20px_rgba(0,245,255,0.4)]">
-                                                    Most Popular
-                                                </div>
-                                            </div>
+                                        <h3 className="text-lg font-bold text-white mb-1 group-hover:text-cyan-400 transition-colors">{pkg.name}</h3>
+                                        <p className="text-sm text-white/40 mb-4 h-10">{pkg.description}</p>
+
+                                        <div className="flex items-end gap-1">
+                                            <span className="text-xl font-semibold text-white">{pkg.price}</span>
+                                        </div>
+
+                                        {selectedPackage.id === pkg.id && (
+                                            <motion.div
+                                                layoutId="active-pkg-ring"
+                                                className="absolute inset-0 rounded-[24px] border-2 border-cyan-500/30"
+                                                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                                            />
                                         )}
+                                    </button>
+                                ))}
+                            </div>
 
-                                        <div className="relative z-10 flex flex-col h-full">
+                            {/* Calendar & Time */}
+                            <div className="grid lg:grid-cols-12 gap-6 max-w-6xl mx-auto w-full mt-8">
+                                {/* Left Column: Calendar & Time (8 cols) */}
+                                <div className="lg:col-span-8 space-y-6">
+                                    <div className="grid md:grid-cols-2 gap-6">
+                                        {/* Calendar */}
+                                        <div className="p-6 rounded-[24px] bg-white/5 border border-white/10 backdrop-blur-md">
+                                            <div className="flex items-center gap-2 mb-6">
+                                                <Calendar className="w-5 h-5 text-white/60" />
+                                                <h3 className="font-semibold text-white">Date</h3>
+                                            </div>
+                                            <CalendarGrid
+                                                availableSlots={availableSlots}
+                                                selectedDate={selectedDate}
+                                                onSelectDate={setSelectedDate}
+                                                loadingAvailability={loadingAvailability}
+                                            />
+                                        </div>
 
-                                            {/* Header Section */}
-                                            <div className="mb-8">
-                                                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-8 shadow-2xl ${selectedPackage.id === pkg.id ? 'bg-cyan-500 text-black' : 'bg-white/5 text-cyan-400'
-                                                    }`}>
-                                                    <pkg.icon className="w-8 h-8" />
-                                                </div>
-
-                                                <h3 className="text-2xl font-bold mb-4 text-white tracking-tight">{pkg.name}</h3>
-                                                <div className="flex items-baseline gap-2 mb-2">
-                                                    <span className="text-5xl font-black text-white tracking-tighter">{pkg.price}</span>
-                                                </div>
-                                                <div className="text-xs text-white/40 uppercase tracking-[0.2em] font-medium">{pkg.duration} Session</div>
+                                        {/* Time Picker */}
+                                        <div className="p-6 rounded-[24px] bg-white/5 border border-white/10 backdrop-blur-md flex flex-col">
+                                            <div className="flex items-center gap-2 mb-6">
+                                                <Clock className="w-5 h-5 text-white/60" />
+                                                <h3 className="font-semibold text-white">Time</h3>
                                             </div>
 
-                                            {/* Divider */}
-                                            <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent my-8" />
-
-                                            {/* Features List - Expanded vertical rhythm */}
-                                            <ul className="space-y-6 mb-auto">
-                                                {pkg.features.map((feature, i) => (
-                                                    <li key={i} className="flex items-start gap-4 text-sm text-white/70 group-hover:text-white transition-colors">
-                                                        <Check className={`w-5 h-5 shrink-0 ${selectedPackage.id === pkg.id ? 'text-cyan-400' : 'text-white/20 group-hover:text-cyan-400/50'}`} />
-                                                        <span className="leading-snug">{feature}</span>
-                                                    </li>
-                                                ))}
-                                            </ul>
-
-                                            {/* Action Button */}
-                                            <button className={`
-                                                w-full py-5 rounded-xl flex items-center justify-center gap-3 text-sm font-bold uppercase tracking-widest transition-all duration-300 mt-10
-                                                ${selectedPackage.id === pkg.id
-                                                    ? 'bg-cyan-400 text-black shadow-[0_0_30px_rgba(0,245,255,0.4)] hover:shadow-[0_0_50px_rgba(0,245,255,0.6)] hover:scale-[1.02]'
-                                                    : 'bg-white/5 text-white hover:bg-white/10 border border-white/10'}
-                                            `}>
-                                                {selectedPackage.id === pkg.id ? (
-                                                    <>
-                                                        <Check className="w-5 h-5" /> Selected
-                                                    </>
-                                                ) : (
-                                                    'Select Plan'
-                                                )}
-                                            </button>
+                                            {!selectedDate ? (
+                                                <div className="flex-1 flex flex-col items-center justify-center text-white/30 space-y-3 min-h-[200px]">
+                                                    <Calendar className="w-12 h-12 opacity-20" />
+                                                    <p className="text-sm font-medium">Available times will appear here</p>
+                                                </div>
+                                            ) : (
+                                                <TimeSlotPicker
+                                                    availableTimes={availableTimes}
+                                                    selectedTime={selectedTime}
+                                                    onSelectTime={setSelectedTime}
+                                                    loading={loadingAvailability}
+                                                    userTimezone={userTimezone}
+                                                />
+                                            )}
                                         </div>
-                                    </motion.div>
-                                ))}
+                                    </div>
+                                </div>
+
+                                {/* Right Column: Summary (4 cols) */}
+                                <div className="lg:col-span-4">
+                                    <BookingSummary
+                                        selectedPackage={selectedPackage}
+                                        selectedDate={selectedDate}
+                                        selectedTime={selectedTime}
+                                        displayTime={displayTime}
+                                        userTimezone={userTimezone}
+                                    />
+
+                                    <motion.button
+                                        whileHover={{ scale: canProceedToDetails ? 1.02 : 1 }}
+                                        whileTap={{ scale: canProceedToDetails ? 0.98 : 1 }}
+                                        onClick={() => canProceedToDetails && setStep(2)}
+                                        disabled={!canProceedToDetails}
+                                        className={`
+                                            w-full mt-4 py-4 rounded-[20px] font-semibold text-base shadow-xl flex items-center justify-center gap-2 transition-all duration-300
+                                            ${canProceedToDetails
+                                                ? 'bg-white text-black hover:bg-white/90 shadow-white/10'
+                                                : 'bg-white/5 text-white/20 cursor-not-allowed'
+                                            }
+                                        `}
+                                    >
+                                        Continue <ArrowRight className="w-5 h-5" />
+                                    </motion.button>
+                                </div>
                             </div>
                         </motion.div>
                     )}
 
-                    {/* STEP 2: SELECT TIME */}
+                    {/* STEP 2: DETAILS */}
                     {step === 2 && (
                         <motion.div
                             key="step2"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: -20 }}
-                            transition={{ duration: 0.5, type: "spring", stiffness: 260, damping: 20 }}
-                            className="max-w-6xl mx-auto grid md:grid-cols-5 gap-8"
-                        >
-                            {/* Date Picker */}
-                            <div className="md:col-span-2 relative overflow-hidden rounded-3xl p-8 bg-gradient-to-br from-black/80 via-black/60 to-black/80 border border-cyan-500/30 backdrop-blur-xl">
-                                <div className="absolute top-0 left-0 w-12 h-12 border-t-2 border-l-2 border-cyan-500/40 rounded-tl-xl" />
-                                <div className="absolute bottom-0 right-0 w-12 h-12 border-b-2 border-r-2 border-cyan-500/40 rounded-br-xl" />
-                                <div className="mb-8 relative z-10">
-                                    <h3 className="text-lg font-bold mb-2 flex items-center gap-2">
-                                        <Calendar className="w-5 h-5 text-cyan-400" /> Select Date
-                                    </h3>
-                                    <p className="text-sm text-white/50 font-light">Choose your preferred day</p>
-                                </div>
-                                <div className="grid grid-cols-1 gap-2 max-h-[400px] overflow-y-auto pr-2">
-                                    {DAYS.map(date => (
-                                        <button
-                                            key={date.toISOString()}
-                                            onClick={() => setSelectedDate(date)}
-                                            className={`
-                                                w-full p-4 rounded-xl flex items-center justify-between transition-all duration-300 border
-                                                ${selectedDate?.toDateString() === date.toDateString()
-                                                    ? 'bg-gradient-to-r from-cyan-500 to-cyan-400 text-black border-cyan-400 shadow-[0_0_20px_rgba(0,245,255,0.4)]'
-                                                    : 'bg-black/40 hover:bg-black/60 text-white/80 hover:text-white border-white/10 hover:border-cyan-500/40'}
-                                            `}
-                                        >
-                                            <span className="font-medium">{date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</span>
-                                            {selectedDate?.toDateString() === date.toDateString() && <Check className="w-4 h-4" />}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Time Picker */}
-                            <div className="md:col-span-3 relative overflow-hidden rounded-3xl p-8 bg-gradient-to-br from-black/80 via-black/60 to-black/80 border border-amber-500/30 backdrop-blur-xl">
-                                <div className="absolute top-0 right-0 w-12 h-12 border-t-2 border-r-2 border-amber-500/40 rounded-tr-xl" />
-                                <div className="absolute bottom-0 left-0 w-12 h-12 border-b-2 border-l-2 border-amber-500/40 rounded-bl-xl" />
-                                <div className="mb-8 relative z-10">
-                                    <h3 className="text-lg font-bold mb-2 flex items-center gap-2">
-                                        <Clock className="w-5 h-5 text-amber-400" /> Select Time
-                                    </h3>
-                                    <p className="text-sm text-white/50 font-light">
-                                        {userTimezone ? `Times shown in ${userTimezone}` : 'Loading timezone...'}
-                                    </p>
-                                </div>
-
-                                {!selectedDate ? (
-                                    <div className="h-40 flex items-center justify-center text-white/30 text-sm italic">
-                                        Select a date first
-                                    </div>
-                                ) : loadingAvailability ? (
-                                    <div className="h-40 flex items-center justify-center">
-                                        <div className="animate-spin w-6 h-6 border-2 border-cyan-500 border-t-transparent rounded-full"></div>
-                                    </div>
-                                ) : availableTimes.length === 0 ? (
-                                    <div className="h-40 flex flex-col items-center justify-center text-white/30 text-sm">
-                                        <p>No available times for this date</p>
-                                        <p className="text-xs mt-2 text-white/20">Try another date</p>
-                                    </div>
-                                ) : (
-                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                                        {availableTimes.map((timeObj) => (
-                                            <button
-                                                key={`${timeObj.originalDate}-${timeObj.original}`}
-                                                onClick={() => setSelectedTime(timeObj.original)} // Store ORIGINAL time for backend
-                                                className={`
-                                                    p-4 rounded-xl text-center font-bold transition-all duration-300 border
-                                                    ${selectedTime === timeObj.original
-                                                        ? 'bg-gradient-to-br from-amber-500 to-amber-600 text-black border-amber-400 shadow-[0_0_25px_rgba(245,158,11,0.5)]'
-                                                        : 'bg-black/40 hover:bg-black/60 text-white/70 hover:text-white border-white/10 hover:border-amber-500/40'}
-                                                `}
-                                            >
-                                                {timeObj.display}
-                                            </button>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        </motion.div>
-                    )}
-
-                    {/* STEP 3: DETAILS */}
-                    {step === 3 && (
-                        <motion.div
-                            key="step3"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, x: -20 }}
-                            transition={{ duration: 0.5, type: "spring", stiffness: 260, damping: 20 }}
+                            transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
                             className="max-w-4xl mx-auto"
                         >
                             <div className="grid md:grid-cols-2 gap-8">
-                                {/* Summary */}
-                                <div className="relative overflow-hidden rounded-3xl p-8 bg-gradient-to-br from-black/80 via-black/60 to-black/80 border border-cyan-500/30 backdrop-blur-xl h-fit">
-                                    <div className="absolute top-0 left-0 w-12 h-12 border-t-2 border-l-2 border-cyan-500/40 rounded-tl-xl" />
-                                    <div className="absolute bottom-0 right-0 w-12 h-12 border-b-2 border-r-2 border-cyan-500/40 rounded-br-xl" />
-
-                                    <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-                                        <Shield className="w-5 h-5 text-cyan-400" /> Session Summary
-                                    </h3>
-
-                                    <div className="space-y-4">
-                                        <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
-                                            <div className="text-sm text-white/50 mb-1">Package</div>
-                                            <div className="text-lg font-bold flex justify-between">
-                                                {selectedPackage.name}
-                                                <span className="text-cyan-400">{selectedPackage.price}</span>
-                                            </div>
-                                        </div>
-                                        <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
-                                            <div className="text-sm text-white/50 mb-1">Date & Time</div>
-                                            <div className="font-medium">
-                                                {selectedDate?.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })} at {availableTimes.find(t => t.original === selectedTime)?.display || selectedTime}
-                                                <span className="text-xs text-white/40 block mt-1">({userTimezone})</span>
-                                            </div>
-                                        </div>
-                                        <div className="pt-4 border-t border-white/10 flex justify-between items-center">
-                                            <span className="text-white/60">Total</span>
-                                            <span className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
-                                                {selectedPackage.price}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
                                 {/* Form */}
                                 <div className="space-y-6">
-                                    <div className="relative overflow-hidden rounded-3xl p-8 bg-gradient-to-br from-black/80 via-black/60 to-black/80 border border-purple-500/30 backdrop-blur-xl">
-                                        <div className="absolute top-0 right-0 w-12 h-12 border-t-2 border-r-2 border-purple-500/40 rounded-tr-xl" />
-                                        <div className="absolute bottom-0 left-0 w-12 h-12 border-b-2 border-l-2 border-purple-500/40 rounded-bl-xl" />
-
-                                        <h3 className="text-xl font-bold mb-6 flex items-center gap-2 relative z-10">
-                                            <Users className="w-5 h-5 text-purple-400" /> Your Details
-                                        </h3>
-
-                                        <div className="space-y-4 relative z-10">
+                                    <div className="p-8 rounded-[32px] bg-white/5 border border-white/10 backdrop-blur-md">
+                                        <div className="flex items-center gap-3 mb-8">
+                                            <div className="p-2.5 rounded-full bg-white/10">
+                                                <Users className="w-5 h-5 text-white" />
+                                            </div>
                                             <div>
-                                                <label className="block text-xs font-bold text-white/60 uppercase tracking-widest mb-2">Full Name</label>
+                                                <h3 className="text-xl font-bold text-white">Your Details</h3>
+                                                <p className="text-sm text-white/40">So we can contact you.</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-5">
+                                            <div className="group">
+                                                <label className="block text-xs font-semibold text-white/40 uppercase tracking-widest mb-2 ml-1">
+                                                    Full Name
+                                                </label>
                                                 <input
                                                     type="text"
                                                     value={formData.name}
                                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                                    className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 transition-all placeholder:text-white/20"
+                                                    className="w-full bg-black/20 border border-white/10 rounded-2xl px-5 py-4 text-white focus:outline-none focus:bg-black/40 focus:border-white/20 transition-all placeholder:text-white/20"
                                                     placeholder="Enter your name"
                                                 />
                                             </div>
-                                            <div>
-                                                <label className="block text-xs font-bold text-white/60 uppercase tracking-widest mb-2">Discord ID</label>
+
+                                            <div className="group">
+                                                <label className="block text-xs font-semibold text-white/40 uppercase tracking-widest mb-2 ml-1">
+                                                    Discord Username
+                                                </label>
                                                 <input
                                                     type="text"
                                                     value={formData.discord}
                                                     onChange={(e) => setFormData({ ...formData, discord: e.target.value })}
-                                                    className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 transition-all placeholder:text-white/20"
+                                                    className="w-full bg-black/20 border border-white/10 rounded-2xl px-5 py-4 text-white focus:outline-none focus:bg-black/40 focus:border-white/20 transition-all placeholder:text-white/20"
                                                     placeholder="username#0000"
                                                 />
                                             </div>
-                                            <div>
-                                                <label className="block text-xs font-bold text-white/60 uppercase tracking-widest mb-2">Email</label>
+
+                                            <div className="group">
+                                                <label className="block text-xs font-semibold text-white/40 uppercase tracking-widest mb-2 ml-1">
+                                                    Email Address
+                                                </label>
                                                 <input
                                                     type="email"
                                                     value={formData.email}
                                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                                    className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 transition-all placeholder:text-white/20"
+                                                    className="w-full bg-black/20 border border-white/10 rounded-2xl px-5 py-4 text-white focus:outline-none focus:bg-black/40 focus:border-white/20 transition-all placeholder:text-white/20"
                                                     placeholder="name@example.com"
                                                 />
                                             </div>
+
+                                            <div className="group">
+                                                <div className="flex items-center justify-between mb-2 ml-1">
+                                                    <label className="text-xs font-semibold text-white/40 uppercase tracking-widest">
+                                                        System Goals
+                                                    </label>
+                                                    <button
+                                                        type="button"
+                                                        onClick={async () => {
+                                                            if (!formData.notes && availableTimes.length === 0) return;
+                                                            setIsAiLoading(true);
+                                                            try {
+                                                                const res = await fetch('/api/ai/suggest', {
+                                                                    method: 'POST',
+                                                                    headers: { 'Content-Type': 'application/json' },
+                                                                    body: JSON.stringify({
+                                                                        packageName: selectedPackage.name,
+                                                                        packageDuration: selectedPackage.duration,
+                                                                        availableSlots: availableTimes.map(t => t.display),
+                                                                        userNotes: formData.notes
+                                                                    })
+                                                                });
+                                                                const data = await res.json();
+                                                                if (data.suggestion) setAiSuggestion(data.suggestion);
+                                                            } catch (e) { console.error('AI suggestion error:', e); }
+                                                            finally { setIsAiLoading(false); }
+                                                        }}
+                                                        disabled={isAiLoading}
+                                                        className="flex items-center gap-1.5 text-[10px] font-bold text-cyan-400 hover:text-cyan-300 transition-colors uppercase tracking-widest disabled:opacity-50"
+                                                    >
+                                                        <Sparkles className="w-3 h-3" />
+                                                        {isAiLoading ? 'Analyzing...' : 'Auto-Fill with AI'}
+                                                    </button>
+                                                </div>
+                                                <textarea
+                                                    value={formData.notes}
+                                                    onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                                                    rows={3}
+                                                    className="w-full bg-black/20 border border-white/10 rounded-2xl px-5 py-4 text-white focus:outline-none focus:bg-black/40 focus:border-white/20 transition-all placeholder:text-white/20 resize-none"
+                                                    placeholder="What games do you play? What are your latency goals?"
+                                                />
+                                            </div>
+
+                                            {/* AI Suggestion */}
+                                            {aiSuggestion && (
+                                                <motion.div
+                                                    initial={{ opacity: 0, height: 0 }}
+                                                    animate={{ opacity: 1, height: 'auto' }}
+                                                    className="p-5 rounded-2xl bg-cyan-950/20 border border-cyan-500/20"
+                                                >
+                                                    <div className="flex items-center gap-2 text-cyan-400 text-xs font-bold uppercase tracking-widest mb-2">
+                                                        <Sparkles className="w-3 h-3" />
+                                                        Optimization Strategy
+                                                    </div>
+                                                    <p className="text-sm text-cyan-100/80 leading-relaxed">{aiSuggestion}</p>
+                                                </motion.div>
+                                            )}
                                         </div>
                                     </div>
+                                </div>
 
-                                    <button
-                                        onClick={handleBooking}
-                                        disabled={loading || !formData.name || !formData.email || !formData.discord}
-                                        className={`
-                                            w-full py-4 rounded-2xl font-bold text-lg transition-all duration-300 relative overflow-hidden group
-                                            ${loading || !formData.name || !formData.email || !formData.discord
-                                                ? 'bg-white/5 text-white/50 cursor-not-allowed'
-                                                : 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-[0_0_30px_rgba(6,182,212,0.4)] hover:shadow-[0_0_50px_rgba(6,182,212,0.6)] hover:scale-[1.02]'}
-                                        `}
-                                    >
-                                        {loading ? (
-                                            <span className="flex items-center justify-center gap-2">
-                                                <div className="animate-spin w-5 h-5 border-2 border-white/30 border-t-white rounded-full" />
-                                                Processing...
-                                            </span>
-                                        ) : (
-                                            <span className="flex items-center justify-center gap-2 relative z-10">
-                                                Secure with PayPal <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                                            </span>
-                                        )}
-                                    </button>
+                                {/* Right Side: Summary + Actions */}
+                                <div>
+                                    <BookingSummary
+                                        selectedPackage={selectedPackage}
+                                        selectedDate={selectedDate}
+                                        selectedTime={selectedTime}
+                                        displayTime={displayTime}
+                                        userTimezone={userTimezone}
+                                    />
 
-                                    <p className="text-center text-xs text-white/40">
-                                        <Shield className="w-3 h-3 inline mr-1" />
-                                        Secure payment via PayPal. No card details stored.
-                                    </p>
+                                    <div className="space-y-3 mt-6">
+                                        <motion.button
+                                            whileHover={{ scale: canSubmit ? 1.02 : 1 }}
+                                            whileTap={{ scale: canSubmit ? 0.98 : 1 }}
+                                            onClick={handleBooking}
+                                            disabled={!canSubmit || loading}
+                                            className={`
+                                                w-full py-4 rounded-[20px] font-bold text-base shadow-xl flex items-center justify-center gap-2 transition-all duration-300
+                                                ${canSubmit && !loading
+                                                    ? 'bg-white text-black hover:bg-white/90 shadow-white/20'
+                                                    : 'bg-white/5 text-white/20 cursor-not-allowed'
+                                                }
+                                            `}
+                                        >
+                                            {loading ? (
+                                                <div className="flex items-center gap-2">
+                                                    <div className="animate-spin w-4 h-4 border-2 border-black/30 border-t-black rounded-full" />
+                                                    Processing...
+                                                </div>
+                                            ) : (
+                                                <>
+                                                    Pay with PayPal <ArrowRight className="w-5 h-5" />
+                                                </>
+                                            )}
+                                        </motion.button>
+
+                                        <button
+                                            onClick={() => setStep(1)}
+                                            className="w-full py-4 rounded-[20px] font-medium text-sm text-white/40 hover:text-white hover:bg-white/5 transition-all flex items-center justify-center gap-2"
+                                        >
+                                            <ArrowLeft className="w-4 h-4" /> Go Back
+                                        </button>
+                                    </div>
+
+                                    <div className="mt-6 flex items-center justify-center gap-2 text-white/20 text-xs">
+                                        <Shield className="w-3 h-3" />
+                                        <span>Secure 256-bit encrypted checkout</span>
+                                    </div>
                                 </div>
                             </div>
                         </motion.div>
                     )}
+
+                    {/* STEP 3: SUCCESS */}
+                    {step === 3 && bookingResult && (
+                        <motion.div
+                            key="step3"
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 0.5, type: 'spring' }}
+                        >
+                            <ConfirmationSuccess
+                                bookingId={bookingResult.id}
+                                packageName={bookingResult.packageName}
+                                dateTime={bookingResult.dateTime}
+                                amount={bookingResult.amount}
+                                email={bookingResult.email}
+                                onReset={resetBooking}
+                            />
+                        </motion.div>
+                    )}
                 </AnimatePresence>
             </main>
-
-            {/* Navigation Footer */}
-            <div className="fixed bottom-0 left-0 right-0 p-6 md:px-20 border-t border-white/10 bg-black/80 backdrop-blur-xl flex justify-between items-center z-50">
-                {step > 1 ? (
-                    <button
-                        onClick={handleBack}
-                        className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-white/40 hover:text-white transition-all group"
-                    >
-                        <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center group-hover:border-white/30 group-hover:bg-white/5 transition-all">
-                            <ArrowRight className="w-4 h-4 rotate-180" />
-                        </div>
-                        <span className="hidden md:inline">Go Back</span>
-                    </button>
-                ) : <div />}
-
-                {step < 3 && (
-                    <button
-                        onClick={handleNext}
-                        disabled={step === 2 && (!selectedDate || !selectedTime)}
-                        className={`
-                            flex items-center gap-4 px-8 py-4 rounded-2xl font-bold text-sm uppercase tracking-widest transition-all group
-                            ${step === 2 && (!selectedDate || !selectedTime)
-                                ? 'bg-white/5 text-white/20 cursor-not-allowed'
-                                : 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-[0_0_30px_rgba(6,182,212,0.4)] hover:shadow-[0_0_50px_rgba(6,182,212,0.6)] hover:scale-105'}
-                        `}
-                    >
-                        <span>Continue</span>
-                        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                    </button>
-                )}
-            </div>
         </div>
     );
 }
 
 export default function BookingPage() {
     return (
-        <Suspense fallback={
-            <div className="min-h-screen bg-[#050505] flex items-center justify-center">
-                <div className="animate-spin w-12 h-12 border-2 border-white/5 border-t-cyan-500 rounded-full" />
-            </div>
-        }>
+        <Suspense fallback={null}>
             <BookingContent />
         </Suspense>
     );

@@ -89,18 +89,47 @@ export async function initDB() {
     )
   `);
 
-  // Forge Recommended Builds
+  // InputZero Architecture: Premium PC Builds with Amazon PAAPI Integration
   await db.execute(`
     CREATE TABLE IF NOT EXISTS forge_builds (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL,          -- e.g. "The FPSOS Standard"
-      description TEXT,            -- e.g. "7800X3D + 4080 Super"
-      parts_url TEXT,              -- e.g. pcpartpicker.com/list/...
-      hardware_cost REAL NOT NULL, -- Manual or Scraped Total
-      service_fee REAL NOT NULL,   -- "Optimization Upsell" 
-      total_price REAL NOT NULL,   -- (Hardware + Fee) - Calculated or Stored
+      name TEXT NOT NULL,
+      tier TEXT NOT NULL,
+      description TEXT,
+      motherboard_asin TEXT,
+      cpu_asin TEXT,
+      gpu_asin TEXT,
+      ram_asin TEXT,
+      case_asin TEXT,
+      psu_asin TEXT,
+      storage_asin TEXT,
+      cooler_asin TEXT,
+      mouse_asin TEXT,
+      mousepad_asin TEXT,
+      mouse_glides_asin TEXT,
+      service_fee_aed REAL DEFAULT 2500,
+      markup_uae REAL DEFAULT 0.125,
+      markup_international REAL DEFAULT 0.225,
+      approved INTEGER DEFAULT 0,
       active INTEGER DEFAULT 1,
-      last_updated DATETIME DEFAULT CURRENT_TIMESTAMP
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `)
+
+    ;
+
+  // Component price cache for Amazon PAAPI
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS component_prices (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      asin TEXT NOT NULL UNIQUE,
+      title TEXT,
+      price_usd REAL,
+      currency TEXT DEFAULT 'USD',
+      availability INTEGER DEFAULT 1,
+      image_url TEXT,
+      last_checked DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   `);
 

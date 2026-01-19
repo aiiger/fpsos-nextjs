@@ -2,9 +2,9 @@
 
 import React from 'react'
 import { motion } from 'framer-motion'
-import { Check, Flame } from 'lucide-react'
+import { Check, Box } from 'lucide-react'
 
-// Forge Tier Features (Base features + Dynamic Support)
+// InputZero Tier Features (Base features + Dynamic Support)
 const baseFeatures = [
     'Custom Component Latency Audit',
     'Hand-Built & Cable Managed',
@@ -15,7 +15,7 @@ const baseFeatures = [
     'Premium Unboxing & Sentimental Gifts'
 ]
 
-interface ForgeCardProps {
+interface InputZeroCardProps {
     build?: {
         name: string;
         description: string;
@@ -26,9 +26,9 @@ interface ForgeCardProps {
     }
 }
 
-export const ForgeCard = ({ build }: ForgeCardProps) => {
+export const InputZeroCard = ({ build }: InputZeroCardProps) => {
     // Default values if no build provided (Fallback)
-    const name = build?.name || 'Project Forge';
+    const name = build?.name || 'InputZero System';
     const description = build?.description || 'Bespoke hardware architecture. Hand-built, tuned, and calibrated.';
 
     const hardwareCost = build?.hardware_cost || 0;
@@ -50,11 +50,11 @@ export const ForgeCard = ({ build }: ForgeCardProps) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="relative w-full h-full bg-[#050505] rounded-[24px] p-8 overflow-hidden border border-orange-500/20 shadow-2xl group flex flex-col"
+            className="relative w-full h-full bg-[#050505] rounded-[24px] p-8 overflow-hidden border border-cyan-500/20 shadow-2xl group flex flex-col"
         >
-            {/* Background Glows (Magma/Molten Theme) */}
-            <div className="absolute -top-[10%] -right-[10%] w-[300px] h-[300px] bg-orange-600/10 blur-[100px] rounded-full pointer-events-none group-hover:bg-orange-600/20 transition-all duration-700" />
-            <div className="absolute -bottom-[10%] -left-[10%] w-[300px] h-[300px] bg-red-600/5 blur-[100px] rounded-full pointer-events-none group-hover:bg-red-600/10 transition-all duration-700" />
+            {/* Background Glows (Engineering/Cyan Theme) */}
+            <div className="absolute -top-[10%] -right-[10%] w-[300px] h-[300px] bg-cyan-600/10 blur-[100px] rounded-full pointer-events-none group-hover:bg-cyan-600/20 transition-all duration-700" />
+            <div className="absolute -bottom-[10%] -left-[10%] w-[300px] h-[300px] bg-blue-600/5 blur-[100px] rounded-full pointer-events-none group-hover:bg-blue-600/10 transition-all duration-700" />
 
             {/* Subtle Grid Pattern Overlay */}
             <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_0%,black_70%,transparent_100%)] pointer-events-none" />
@@ -68,8 +68,8 @@ export const ForgeCard = ({ build }: ForgeCardProps) => {
                         animate={{ opacity: 1, x: 0 }}
                         className="flex items-center gap-2 mb-2"
                     >
-                        <Flame className="w-5 h-5 text-orange-500 fill-orange-500/20" />
-                        <span className="text-xs font-bold tracking-[0.2em] text-orange-500 uppercase">
+                        <Box className="w-5 h-5 text-cyan-500" />
+                        <span className="text-xs font-bold tracking-[0.2em] text-cyan-500 uppercase">
                             Ultimate Hardware
                         </span>
                     </motion.div>
@@ -89,7 +89,7 @@ export const ForgeCard = ({ build }: ForgeCardProps) => {
                 </div>
 
                 {/* Separator */}
-                <div className="h-px w-full bg-gradient-to-r from-transparent via-orange-500/30 to-transparent mb-8" />
+                <div className="h-px w-full bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent mb-8" />
 
                 {/* Price */}
                 <div className="mb-10">
@@ -111,7 +111,7 @@ export const ForgeCard = ({ build }: ForgeCardProps) => {
                             className="flex items-start gap-3"
                         >
                             <div className="mt-1 flex-shrink-0">
-                                <Check className="w-4 h-4 text-orange-500" strokeWidth={3} />
+                                <Check className="w-4 h-4 text-cyan-500" strokeWidth={3} />
                             </div>
                             <span className="text-[15px] text-zinc-300 font-medium leading-tight">
                                 {feature}
@@ -122,16 +122,16 @@ export const ForgeCard = ({ build }: ForgeCardProps) => {
 
                 {/* Action Button */}
                 <motion.button
-                    whileHover={{ scale: 1.02, backgroundColor: 'rgba(249, 115, 22, 1)', color: '#000' }}
+                    whileHover={{ scale: 1.02, backgroundColor: 'rgba(6, 182, 212, 1)', color: '#000' }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full py-4 bg-orange-500/10 border border-orange-500/20 rounded-xl text-orange-500 font-bold text-sm uppercase tracking-wider transition-all duration-300 shadow-[0_0_20px_rgba(249,115,22,0.1)] hover:shadow-[0_0_30px_rgba(249,115,22,0.3)] mt-auto"
+                    className="w-full py-4 bg-cyan-500/10 border border-cyan-500/20 rounded-xl text-cyan-500 font-bold text-sm uppercase tracking-wider transition-all duration-300 shadow-[0_0_20px_rgba(6, 182, 212, 0.1)] hover:shadow-[0_0_30px_rgba(6, 182, 212, 0.3)] mt-auto"
                 >
                     Secure Allocation
                 </motion.button>
             </div>
 
             {/* Decorative Bottom Line */}
-            <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent opacity-60" />
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-60" />
         </motion.div>
     )
 }

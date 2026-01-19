@@ -143,7 +143,8 @@ class FPSOSDatabase:
         
         conn.commit()
         conn.close()
-        print("✅ Database initialized with all tables")
+        self._ensure_specs_column()
+        print("Database initialized with all tables")
     
     # ========== USER OPERATIONS ==========
     
@@ -173,6 +174,35 @@ class FPSOSDatabase:
         conn.close()
         
         return dict(result) if result else None
+    
+    def update_user_specs(self, discord_id, specs_str):
+        """Update user's PC specs"""
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        
+        # Ensure user exists first
+        self.add_user(discord_id, "Unknown", None)
+        
+        cursor.execute('''
+            UPDATE users 
+            SET specs = ? 
+            WHERE discord_id = ?
+        ''', (specs_str, str(discord_id)))
+        
+        conn.commit()
+        conn.close()
+
+    def _ensure_specs_column(self):
+        """Migration: Ensure specs column exists in users table"""
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("ALTER TABLE users ADD COLUMN specs TEXT")
+            conn.commit()
+            print("Added 'specs' column to users table.")
+        except sqlite3.OperationalError:
+            pass # Column likely exists
+        conn.close()
     
     # ========== DIAGNOSTIC OPERATIONS ==========
     
@@ -316,6 +346,14 @@ class FPSOSDatabase:
             INSERT INTO tags (name, content, created_by) VALUES (?, ?, ?)
             ON CONFLICT(name) DO UPDATE SET content=excluded.content, created_by=excluded.created_by
         ''', (name.lower(), content, str(created_by)))
+        conn.commit()
+        conn.close()
+
+    def delete_tag(self, name):
+        """Delete a tag by name"""
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        cursor.execute('DELETE FROM tags WHERE name = ?', (name.lower(),))
         conn.commit()
         conn.close()
 

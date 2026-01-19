@@ -32,6 +32,7 @@ export default function Home() {
 }
 
 import InputZeroSection from '@/components/InputZeroSection'
+import BuildsSection from '@/components/BuildsSection'
 
 function ContentWrapper() {
     const { values } = useTuner();
@@ -44,6 +45,9 @@ function ContentWrapper() {
 
             {/* 2. InputZero Architectural Division */}
             <InputZeroSection />
+
+            {/* 3. Build Tiers */}
+            <BuildsSection />
         </div>
     );
 }

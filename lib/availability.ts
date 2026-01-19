@@ -16,11 +16,11 @@ function generateBaseSlots(startDate: string, endDate: string) {
   const slots = [];
   const start = new Date(startDate);
   const end = new Date(endDate);
-  
+
   // Iterate through each day
   for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
     const dayOfWeek = d.getDay();
-    
+
     // Check if open on this day
     if (!BUSINESS_CONFIG.days.includes(dayOfWeek)) continue;
 
@@ -49,11 +49,11 @@ export async function getAvailableSlots(startDate: string, endDate: string) {
 
   const bookedKeys = new Set(
     bookingsResult.rows.map((b: any) => {
-        try {
-            // date_time format in DB is likely "YYYY-MM-DD HH:mm"
-            // Normalize just in case
-            return b.date_time.trim(); 
-        } catch { return ''; }
+      try {
+        // date_time format in DB is likely "YYYY-MM-DD HH:mm"
+        // Normalize just in case
+        return b.date_time.trim();
+      } catch { return ''; }
     })
   );
 
@@ -72,23 +72,28 @@ export async function getAvailableSlots(startDate: string, endDate: string) {
     overrides.set(key, row.is_available === 1); // true if available, false if blocked
   });
 
-  // 4. Merge Logic
-  const finalSlots = baseSlots.filter(slot => {
-    const key = `${slot.date} ${slot.time}`;
+  // 4. Merge Logic - filter and add is_available property
+  const finalSlots = baseSlots
+    .filter(slot => {
+      const key = `${slot.date} ${slot.time}`;
 
-    // A. Check specific overrides first
-    if (overrides.has(key)) {
+      // A. Check specific overrides first
+      if (overrides.has(key)) {
         return overrides.get(key) === true; // If manually blocked (false), exclude. If manually added (true), include.
-    }
+      }
 
-    // B. Check if booked
-    if (bookedKeys.has(key)) {
+      // B. Check if booked
+      if (bookedKeys.has(key)) {
         return false;
-    }
+      }
 
-    // C. Default to available (since we generated it from business hours)
-    return true;
-  });
+      // C. Default to available (since we generated it from business hours)
+      return true;
+    })
+    .map(slot => ({
+      ...slot,
+      is_available: true  // All slots that pass the filter are available
+    }));
 
   return finalSlots;
 }

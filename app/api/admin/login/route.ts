@@ -1,23 +1,37 @@
-import { admin } from '@/lib/firebase-admin';
 import { NextResponse } from 'next/server';
+import { encrypt } from '@/lib/auth';
 
 export async function POST(request: Request) {
-    const body = await request.json();
-    const { username, password } = body;
+    try {
+        const body = await request.json();
+        const { password } = body;
 
-    // Verify Firebase ID Token
-    if (username === 'admin') {
-        // In a real app, the "password" field would be the ID token sent from client
-        try {
-            const decodedToken = await admin.auth().verifyIdToken(password);
-            // Optional: Check if user is actually an admin claim
-            return NextResponse.json({ success: true, uid: decodedToken.uid });
-        } catch (error) {
-            console.error("Auth failed:", error);
-            // Fallback for legacy dev mode (remove in production)
-            // if (password === 'legacy_password') return NextResponse.json({ success: true });
+        const validPassword = process.env.ADMIN_PASSWORD;
+
+        if (!validPassword) {
+            console.error('ADMIN_PASSWORD environment variable is not set');
+            return NextResponse.json({ success: false, error: 'Server configuration error' }, { status: 500 });
         }
-    }
 
-    return NextResponse.json({ success: false }, { status: 401 });
+        if (password === validPassword) {
+            const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+            const session = await encrypt({ user: 'admin', expires });
+
+            const response = NextResponse.json({ success: true });
+            response.cookies.set('session', session, {
+                expires,
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                path: '/'
+            });
+
+            return response;
+        }
+
+        return NextResponse.json({ success: false, error: 'Invalid credentials' }, { status: 401 });
+    } catch (error) {
+        console.error('Login error:', error);
+        return NextResponse.json({ success: false, error: 'Server error' }, { status: 500 });
+    }
 }
